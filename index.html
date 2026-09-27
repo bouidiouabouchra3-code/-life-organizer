@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="منظم حياتي">
 <title>منظم حياتي</title>
 <link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -15,10 +17,13 @@
 <header class="top">
   <div>
     <small>Cute & Practical</small>
-    <h1>منظم حياتي</h1>
+    <div class="brandTitle"><h1>منظم حياتي</h1><span class="versionBadge">v1.0</span></div>
     <p id="todayLabel"></p>
   </div>
-  <button id="mascot" aria-label="رسالة لطيفة">🐱</button>
+  <div class="topActions">
+    <button class="headerAction searchAction" data-go="search" aria-label="بحث شامل">⌕</button>
+    <button id="mascot" class="headerAction" aria-label="رسالة لطيفة">🐱</button>
+  </div>
 </header>
 
 <main>
@@ -27,6 +32,17 @@
     <div><span>اليوم</span><h2>أهلًا بكِ 💗</h2><p>كل شيء مهم عندكِ في مكان واحد.</p></div>
     <b>✨🌙</b>
   </div>
+
+  <button class="globalSearchLauncher" data-go="search">
+    <span>⌕</span>
+    <div><strong>البحث في كل التطبيق</strong><small>مهام، ملاحظات، أفكار، مصاريف، عادات ودراسة</small></div>
+    <b>←</b>
+  </button>
+  <button class="backupLauncher" data-go="backup">
+    <span>💾</span>
+    <div><strong>النسخ الاحتياطي</strong><small id="homeBackupStatus">اعملي نسخة قبل أي تغيير كبير</small></div>
+    <b>←</b>
+  </button>
 
   <div class="sectionTitle">
     <div><small>نظرة سريعة</small><h3>يومك الآن</h3></div>
@@ -38,6 +54,10 @@
     <button data-go="tasks" data-filter="completed"><i>🌿</i><span>المكتمل</span><strong id="doneCount">0</strong><em>أحسنتِ ✨</em></button>
     <button data-go="expenses"><i>🪙</i><span>مصروفات الشهر</span><strong class="moneyStat" id="monthExpenseHome">0</strong><em id="expenseHomeSub">ابدئي أول تسجيل</em></button>
     <button data-go="expenses"><i>💰</i><span>رصيد الشهر</span><strong class="moneyStat" id="monthBalanceHome">0</strong><em>الدخل − المصروف</em></button>
+    <button data-go="habits"><i>🌿</i><span>عادات اليوم</span><strong id="habitsDueHome">0</strong><em id="habitsDueSub">ابدئي أول عادة</em></button>
+    <button data-go="habits"><i>✨</i><span>مكتمل اليوم</span><strong id="habitsDoneHome">0</strong><em>استمري 💗</em></button>
+    <button data-go="study"><i>🎓</i><span>دراسة اليوم</span><strong id="studyTodayHome">0</strong><em id="studyTodaySub">لا توجد جلسات</em></button>
+    <button data-go="study"><i>📅</i><span>القادم</span><strong id="studyUpcomingHome">0</strong><em>هذا الأسبوع</em></button>
     <button data-go="notes"><i>📝</i><span>الملاحظات</span><strong id="notesCount">0</strong><em id="notesSub">اكتبي أول ملاحظة</em></button>
     <button data-go="ideas"><i>💡</i><span>الأفكار</span><strong id="ideasCount">0</strong><em id="ideasSub">احفظي أي فكرة</em></button>
   </div>
@@ -51,8 +71,8 @@
     <button class="lav" data-go="notes"><i>📝</i><strong>الملاحظات</strong><span id="noteCardText">اكتبي أول ملاحظة</span></button>
     <button class="yellow" data-go="ideas"><i>💡</i><strong>الأفكار</strong><span id="ideaCardText">احفظي أول فكرة</span></button>
     <button class="peach" data-go="expenses"><i>🪙</i><strong>المصاريف</strong><span id="expenseCardText">ابدئي أول تسجيل</span></button>
-    <button class="mint" data-soon="العادات"><i>🌿</i><strong>العادات</strong><span>قريبًا في P05</span></button>
-    <button class="blue" data-soon="الدراسة"><i>🎓</i><strong>الدراسة</strong><span>قريبًا في P06</span></button>
+    <button class="mint" data-go="habits"><i>🌿</i><strong>العادات</strong><span id="habitCardText">ابدئي أول عادة</span></button>
+    <button class="blue" data-go="study"><i>🎓</i><strong>الدراسة</strong><span id="studyCardText">أضيفي أول جلسة</span></button>
   </div>
 
   <div class="quote">💞 <span>المكان المرتب للأفكار يخلي بالك أهدى.</span></div>
@@ -70,6 +90,25 @@
     <button class="filter" data-task-filter="pending">متبقية</button>
     <button class="filter" data-task-filter="completed">مكتملة</button>
   </div>
+
+  <div class="smartFilterBar">
+    <div class="searchBox compactSearch"><span>⌕</span><input id="taskSearch" type="search" placeholder="ابحثي في المهام..."></div>
+    <select id="taskCategoryFilter" aria-label="تصنيف المهمة">
+      <option value="all">كل التصنيفات</option>
+      <option value="personal">شخصي</option>
+      <option value="study">دراسة</option>
+      <option value="home">البيت</option>
+      <option value="work">شغل</option>
+      <option value="other">أخرى</option>
+    </select>
+    <select id="taskPriorityFilter" aria-label="أولوية المهمة">
+      <option value="all">كل الأولويات</option>
+      <option value="high">عالية</option>
+      <option value="medium">متوسطة</option>
+      <option value="low">منخفضة</option>
+    </select>
+  </div>
+
   <div id="taskList" class="taskList"></div>
 </section>
 
@@ -143,6 +182,29 @@
     <button class="filter" data-expense-filter="income">دخل</button>
   </div>
 
+  <div class="smartFilterBar expenseSmartFilter">
+    <div class="searchBox compactSearch"><span>⌕</span><input id="expenseSearch" type="search" placeholder="ابحثي في الحركات..."></div>
+    <select id="expenseCategoryFilter" aria-label="فئة الحركة">
+      <option value="all">كل الفئات</option>
+      <optgroup label="مصروفات">
+        <option value="food">طعام ومشروبات</option>
+        <option value="transport">مواصلات</option>
+        <option value="shopping">مشتريات</option>
+        <option value="entertainment">ترفيه</option>
+        <option value="bills">فواتير</option>
+        <option value="health">صحة</option>
+        <option value="education">دراسة</option>
+      </optgroup>
+      <optgroup label="دخل">
+        <option value="salary">راتب</option>
+        <option value="gift">هدية</option>
+        <option value="freelance">عمل إضافي</option>
+        <option value="refund">استرداد</option>
+      </optgroup>
+      <option value="other">أخرى</option>
+    </select>
+  </div>
+
   <section class="moneySection">
     <div class="sectionMiniHead"><div><small>نظرة عامة</small><h3>أين تذهب المصاريف؟</h3></div></div>
     <div id="categoryBreakdown" class="categoryBreakdown"></div>
@@ -154,6 +216,226 @@
   </section>
 </section>
 
+
+<section id="habitsView" class="view">
+  <div class="contentHead habitTheme">
+    <div class="row">
+      <div><small>P05</small><h2>العادات</h2><p id="habitsSummary">ابني روتينك يومًا بيوم</p></div>
+      <b>🌿🐱</b>
+    </div>
+
+    <div class="habitTodaySummary">
+      <div><span>عادات اليوم</span><strong id="habitsDue">0</strong></div>
+      <div><span>اكتملت</span><strong id="habitsDone">0</strong></div>
+      <div><span>نسبة اليوم</span><strong id="habitsRate">0%</strong></div>
+    </div>
+
+    <button id="addHabit" class="primary habitBtn">＋ إضافة عادة جديدة</button>
+  </div>
+
+  <section class="weekPanel">
+    <div class="sectionMiniHead">
+      <div><small>هذا الأسبوع</small><h3 id="weekRangeLabel">متابعة أسبوعية</h3></div>
+      <span>اضغطي على الأيام السابقة للتعديل</span>
+    </div>
+    <div id="weekHeader" class="weekHeader"></div>
+  </section>
+
+  <div class="filters habitFilters">
+    <button class="filter active" data-habit-filter="all">الكل</button>
+    <button class="filter" data-habit-filter="today">اليوم</button>
+    <button class="filter" data-habit-filter="completed">مكتملة اليوم</button>
+    <button class="filter" data-habit-filter="pending">متبقية اليوم</button>
+  </div>
+
+  <div class="searchBox standaloneSearch"><span>⌕</span><input id="habitSearch" type="search" placeholder="ابحثي في العادات..."></div>
+  <div id="habitList" class="habitList"></div>
+</section>
+
+
+<section id="studyView" class="view">
+  <div class="contentHead studyTheme">
+    <div class="row">
+      <div><small>P06</small><h2>مخطط الدراسة</h2><p id="studySummary">رتّبي جلساتك وامتحاناتك بسهولة</p></div>
+      <b>🎓📚</b>
+    </div>
+
+    <div class="studyTodaySummary">
+      <div><span>اليوم</span><strong id="studyTodayCount">0</strong></div>
+      <div><span>هذا الأسبوع</span><strong id="studyWeekCount">0</strong></div>
+      <div><span>مكتمل</span><strong id="studyDoneCount">0</strong></div>
+    </div>
+
+    <button id="addStudy" class="primary studyBtn">＋ إضافة جلسة أو موعد</button>
+  </div>
+
+  <section class="studyWeekPanel">
+    <div class="sectionMiniHead">
+      <div><small>هذا الأسبوع</small><h3 id="studyWeekRange">الجدول الأسبوعي</h3></div>
+      <span id="studyWeekHint">اضغطي على يوم للتصفية</span>
+    </div>
+    <div id="studyWeekHeader" class="studyWeekHeader"></div>
+  </section>
+
+  <div class="filters studyFilters">
+    <button class="filter active" data-study-filter="all">الكل</button>
+    <button class="filter" data-study-filter="today">اليوم</button>
+    <button class="filter" data-study-filter="week">هذا الأسبوع</button>
+    <button class="filter" data-study-filter="upcoming">القادم</button>
+    <button class="filter" data-study-filter="completed">مكتمل</button>
+  </div>
+
+  <div class="studyToolbar">
+    <div class="searchBox">
+      <span>⌕</span>
+      <input id="studySearch" type="search" placeholder="البحث في المادة أو العنوان...">
+    </div>
+    <select id="studySubjectFilter" aria-label="تصفية حسب المادة">
+      <option value="all">كل المواد</option>
+    </select>
+  </div>
+
+  <div id="studyList" class="studyList"></div>
+</section>
+
+
+<section id="searchView" class="view">
+  <div class="contentHead searchTheme">
+    <div class="row">
+      <div><small>P07</small><h2>البحث الشامل</h2><p>وصّلي لأي شيء داخل التطبيق بسرعة</p></div>
+      <b>🔎✨</b>
+    </div>
+
+    <div class="globalSearchBox">
+      <span>⌕</span>
+      <input id="globalSearch" type="search" placeholder="اكتبي كلمة للبحث...">
+      <button id="clearGlobalSearch" class="clearSearch hidden" aria-label="مسح البحث">✕</button>
+    </div>
+  </div>
+
+  <div class="filters globalTypeFilters">
+    <button class="filter active" data-global-type="all">الكل</button>
+    <button class="filter" data-global-type="tasks">مهام</button>
+    <button class="filter" data-global-type="notes">ملاحظات</button>
+    <button class="filter" data-global-type="ideas">أفكار</button>
+    <button class="filter" data-global-type="expenses">مصاريف</button>
+    <button class="filter" data-global-type="habits">عادات</button>
+    <button class="filter" data-global-type="study">دراسة</button>
+  </div>
+
+  <div class="searchControls">
+    <span id="globalSearchCount">0 نتيجة</span>
+    <select id="globalSort" aria-label="ترتيب النتائج">
+      <option value="newest">الأحدث أولًا</option>
+      <option value="oldest">الأقدم أولًا</option>
+      <option value="az">أبجديًا</option>
+    </select>
+  </div>
+
+  <div id="globalResults" class="globalResults"></div>
+</section>
+
+
+<section id="backupView" class="view">
+  <div class="contentHead backupTheme">
+    <div class="row">
+      <div><small>P08</small><h2>النسخ الاحتياطي</h2><p>احفظي بياناتك واسترجعيها وقت ما تحتاجي</p></div>
+      <b>💾🌸</b>
+    </div>
+  </div>
+
+  <section class="backupStatusCard">
+    <div class="backupStatusTop">
+      <div>
+        <small>حالة بياناتك</small>
+        <h3 id="backupStatusTitle">جاهزة للنسخ</h3>
+        <p id="backupStatusText">كل بيانات التطبيق محفوظة محليًا على هذا الجهاز.</p>
+      </div>
+      <div class="backupShield">🛡️</div>
+    </div>
+
+    <div class="backupStats">
+      <div><span>مهام</span><strong id="backupTasksCount">0</strong></div>
+      <div><span>ملاحظات</span><strong id="backupNotesCount">0</strong></div>
+      <div><span>أفكار</span><strong id="backupIdeasCount">0</strong></div>
+      <div><span>حركات مالية</span><strong id="backupTransactionsCount">0</strong></div>
+      <div><span>عادات</span><strong id="backupHabitsCount">0</strong></div>
+      <div><span>دراسة</span><strong id="backupStudyCount">0</strong></div>
+    </div>
+
+    <div class="lastBackupRow">
+      <span>آخر نسخة احتياطية</span>
+      <strong id="lastBackupText">لم يتم إنشاء نسخة بعد</strong>
+    </div>
+  </section>
+
+  <section class="backupActionCard">
+    <div class="backupActionIcon">📤</div>
+    <div class="backupActionBody">
+      <h3>تصدير كل البيانات</h3>
+      <p>ينشئ ملف JSON واحد يحتوي على المهام والملاحظات والأفكار والمصاريف والعادات والدراسة والإعدادات.</p>
+    </div>
+    <button id="exportBackup" class="primary backupBtn">إنشاء نسخة احتياطية</button>
+  </section>
+
+  <section class="backupActionCard importCard">
+    <div class="backupActionIcon">📥</div>
+    <div class="backupActionBody">
+      <h3>استيراد نسخة احتياطية</h3>
+      <p>اختاري ملف Backup سابق. سيتم التحقق منه قبل استبدال البيانات الحالية.</p>
+    </div>
+    <input id="importBackupFile" type="file" accept=".json,application/json" hidden>
+    <button id="chooseBackupFile" class="secondary wideSecondary">اختيار ملف النسخة</button>
+    <div id="importPreview" class="importPreview hidden"></div>
+  </section>
+
+  <section class="backupActionCard csvCard">
+    <div class="backupActionIcon">📄</div>
+    <div class="backupActionBody">
+      <h3>تصدير المصاريف كجدول</h3>
+      <p>ينشئ ملف CSV للحركات المالية يمكن فتحه في Excel أو Numbers.</p>
+    </div>
+    <button id="exportExpensesCsv" class="secondary wideSecondary">تصدير المصاريف CSV</button>
+  </section>
+
+  <section class="backupWarningCard">
+    <div>⚠️</div>
+    <div>
+      <h3>مهم</h3>
+      <p>حذف بيانات Safari أو حذف بيانات الموقع قد يمسح البيانات المحلية. لذلك احتفظي بنسخة احتياطية من وقت لآخر.</p>
+    </div>
+  </section>
+</section>
+
+<section id="moreView" class="view">
+  <div class="contentHead moreTheme">
+    <div class="row"><div><small>مساحتك</small><h2>المزيد</h2><p>باقي أقسام التطبيق في مكان واحد</p></div><b>🌸✨</b></div>
+  </div>
+  <button class="moreSearchCard" data-go="search"><span>🔎</span><div><strong>البحث الشامل</strong><small>ابحثي في كل أقسام التطبيق</small></div><b>←</b></button>
+  <button class="moreSearchCard backupMoreCard" data-go="backup"><span>💾</span><div><strong>النسخ الاحتياطي</strong><small id="moreBackupText">احفظي نسخة من بياناتك</small></div><b>←</b></button>
+  <section class="launchPanel">
+    <div class="launchIconWrap"><img src="./apple-touch-icon.png" alt="أيقونة التطبيق"></div>
+    <div class="launchText">
+      <small>P09 • Launch</small>
+      <h3>نسخة الإطلاق جاهزة</h3>
+      <p>أضيفي التطبيق للشاشة الرئيسية ليظهر كتطبيق مستقل على الآيفون.</p>
+    </div>
+    <button id="showInstallHelp" class="primary launchBtn">طريقة التثبيت على الآيفون</button>
+  </section>
+
+  <section class="aboutPanel">
+    <div><span>✨</span><strong>الإصدار</strong><small>1.0 — P09</small></div>
+    <div><span>📱</span><strong>العمل</strong><small>PWA على iPhone</small></div>
+    <div><span>🔒</span><strong>البيانات</strong><small>محلية على جهازك</small></div>
+  </section>
+  <div class="moreGrid">
+    <button class="lav" data-go="notes"><i>📝</i><strong>الملاحظات</strong><span id="moreNotesText">ملاحظاتك المحفوظة</span></button>
+    <button class="yellow" data-go="ideas"><i>💡</i><strong>الأفكار</strong><span id="moreIdeasText">أفكارك المحفوظة</span></button>
+    <button class="blue" data-go="study"><i>🎓</i><strong>الدراسة</strong><span id="moreStudyText">أضيفي أول جلسة</span></button>
+    <button class="peach" data-go="backup"><i>💾</i><strong>النسخ الاحتياطي</strong><span id="backupCardText">احفظي نسخة من بياناتك</span></button>
+  </div>
+</section>
+
 <section id="soonView" class="view">
   <div class="soon">
     <div>🌸</div><h2 id="soonTitle"></h2><p id="soonText"></p>
@@ -162,12 +444,18 @@
 </section>
 </main>
 
+<div class="launchFooter">
+  <span>🌸</span>
+  <span>Life Organizer • v1.0</span>
+  <span>🐱</span>
+</div>
+
 <nav>
   <button class="nav active" data-go="home">🏠<span>الرئيسية</span></button>
   <button class="nav" data-go="tasks">✅<span>المهام</span></button>
   <button class="nav" data-go="expenses">🪙<span>المصاريف</span></button>
-  <button class="nav" data-go="notes">📝<span>الملاحظات</span></button>
-  <button class="nav" data-go="ideas">💡<span>الأفكار</span></button>
+  <button class="nav" data-go="habits">🌿<span>العادات</span></button>
+  <button class="nav" data-go="more">•••<span>المزيد</span></button>
 </nav>
 </div>
 
@@ -256,6 +544,151 @@
 
       <button class="primary expenseBtn" type="submit" id="saveTransaction">حفظ الحركة 🪙</button>
     </form>
+  </div>
+</div>
+
+
+<!-- HABIT MODAL -->
+<div id="habitModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop">
+      <div><small>عادتك الخاصة</small><h2 id="habitModalTitle">عادة جديدة</h2></div>
+      <button data-close="habitModal">✕</button>
+    </div>
+    <form id="habitForm">
+      <input type="hidden" id="habitId">
+
+      <label>اسم العادة
+        <input id="habitTitle" maxlength="70" placeholder="مثال: شرب الماء" required>
+      </label>
+
+      <label>الأيقونة
+        <select id="habitIcon">
+          <option value="💧">💧 ماء</option>
+          <option value="📚">📚 قراءة</option>
+          <option value="🏃‍♀️">🏃‍♀️ رياضة</option>
+          <option value="🌙">🌙 نوم مبكر</option>
+          <option value="🧘‍♀️">🧘‍♀️ تأمل</option>
+          <option value="🧴">🧴 عناية</option>
+          <option value="🎓">🎓 دراسة</option>
+          <option value="🥗">🥗 أكل صحي</option>
+          <option value="✨">✨ أخرى</option>
+        </select>
+      </label>
+
+      <fieldset class="daysField">
+        <legend>أيام التكرار</legend>
+        <div class="daysPicker">
+          <label><input type="checkbox" value="6" checked><span>سبت</span></label>
+          <label><input type="checkbox" value="0" checked><span>أحد</span></label>
+          <label><input type="checkbox" value="1" checked><span>اثن</span></label>
+          <label><input type="checkbox" value="2" checked><span>ثلا</span></label>
+          <label><input type="checkbox" value="3" checked><span>أرب</span></label>
+          <label><input type="checkbox" value="4" checked><span>خمي</span></label>
+          <label><input type="checkbox" value="5" checked><span>جمع</span></label>
+        </div>
+      </fieldset>
+
+      <label>ملاحظة اختيارية
+        <textarea id="habitNote" rows="3" maxlength="180" placeholder="مثال: 8 أكواب خلال اليوم"></textarea>
+      </label>
+
+      <button class="primary habitBtn" type="submit" id="saveHabit">حفظ العادة 🌿</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- STUDY MODAL -->
+<div id="studyModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop">
+      <div><small>جدولك الدراسي</small><h2 id="studyModalTitle">إضافة جلسة أو موعد</h2></div>
+      <button data-close="studyModal">✕</button>
+    </div>
+
+    <form id="studyForm">
+      <input type="hidden" id="studyId">
+
+      <label>العنوان
+        <input id="studyTitle" maxlength="90" placeholder="مثال: مراجعة الفصل الثالث" required>
+      </label>
+
+      <label>المادة
+        <input id="studySubject" maxlength="60" placeholder="مثال: الرياضيات" required>
+      </label>
+
+      <div class="formRow">
+        <label>النوع
+          <select id="studyType">
+            <option value="study">جلسة مذاكرة</option>
+            <option value="class">محاضرة / حصة</option>
+            <option value="homework">واجب</option>
+            <option value="exam">امتحان</option>
+            <option value="review">مراجعة</option>
+            <option value="other">أخرى</option>
+          </select>
+        </label>
+
+        <label>الأولوية
+          <select id="studyPriority">
+            <option value="low">منخفضة</option>
+            <option value="medium" selected>متوسطة</option>
+            <option value="high">عالية</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="formRow">
+        <label>التاريخ<input id="studyDate" type="date" required></label>
+        <label>الوقت<input id="studyTime" type="time"></label>
+      </div>
+
+      <div class="formRow">
+        <label>المدة بالدقائق
+          <input id="studyDuration" type="number" min="0" max="720" step="5" inputmode="numeric" placeholder="60">
+        </label>
+        <label>التذكير داخل التطبيق
+          <select id="studyReminder">
+            <option value="none">بدون</option>
+            <option value="same_day">في نفس اليوم</option>
+            <option value="one_day">قبلها بيوم</option>
+            <option value="two_days">قبلها بيومين</option>
+          </select>
+        </label>
+      </div>
+
+      <label>ملاحظات اختيارية
+        <textarea id="studyNote" rows="4" maxlength="400" placeholder="ماذا تريدين إنجازه؟"></textarea>
+      </label>
+
+      <button class="primary studyBtn" type="submit" id="saveStudy">حفظ الموعد 🎓</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- INSTALL HELP -->
+<div id="installModal" class="modal hidden">
+  <div class="sheet installSheet">
+    <div class="modalTop">
+      <div><small>تثبيت التطبيق</small><h2>أضيفيه للشاشة الرئيسية 📱</h2></div>
+      <button data-close="installModal">✕</button>
+    </div>
+
+    <div class="installSteps">
+      <div><b>1</b><span>افتحي رابط التطبيق في Safari.</span></div>
+      <div><b>2</b><span>اضغطي زر المشاركة Share.</span></div>
+      <div><b>3</b><span>اختاري Add to Home Screen.</span></div>
+      <div><b>4</b><span>اضغطي Add. هتظهر الأيقونة على الشاشة الرئيسية.</span></div>
+    </div>
+
+    <div class="installNote">
+      <span>💡</span>
+      <p>بعد أي باتش جديد، افتحي التطبيق واعملي Refresh لو ظهرت نسخة قديمة بسبب الكاش.</p>
+    </div>
+
+    <button class="primary launchBtn" data-close="installModal">تمام</button>
   </div>
 </div>
 

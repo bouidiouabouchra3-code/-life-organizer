@@ -7,5 +7,27 @@
   "background_color": "#fff8fb",
   "theme_color": "#f8dce7",
   "lang": "ar",
-  "dir": "rtl"
+  "dir": "rtl",
+  "description": "تطبيق شخصي لطيف وعملي لتنظيم المهام والمصاريف والملاحظات والعادات والدراسة والأفكار.",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }
