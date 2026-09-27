@@ -3,13 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f8dce7">
+<meta id="appThemeColor" name="theme-color" content="#f8dce7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Bloomie">
 <title>Bloomie</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
+<script>
+try{
+  const p=JSON.parse(localStorage.getItem("lifeOrganizer.privacy.v1")||"{}");
+  if(p&&p.enabled)document.documentElement.classList.add("privacy-boot-lock");
+}catch{}
+</script>
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -18,7 +24,7 @@
   <div>
     <small>Cute & Practical</small>
     <div class="brandBlock">
-      <div class="brandTitle"><h1>Bloomie</h1><span class="versionBadge">v1.1</span></div>
+      <div class="brandTitle"><h1>Bloomie</h1><span class="versionBadge">v2.2</span></div>
       <span class="brandTagline">منظم حياتك بكل حب 🌸</span>
     </div>
     <p id="todayLabel"></p>
@@ -38,12 +44,52 @@
 
   <button class="globalSearchLauncher" data-go="search">
     <span>⌕</span>
-    <div><strong>البحث في كل التطبيق</strong><small>مهام، ملاحظات، أفكار، مصاريف، عادات ودراسة</small></div>
+    <div><strong>البحث في كل التطبيق</strong><small>مهام، أهداف، مزاج، ملاحظات، أفكار، مصاريف، عادات ودراسة</small></div>
     <b>←</b>
   </button>
   <button class="backupLauncher" data-go="backup">
     <span>💾</span>
     <div><strong>النسخ الاحتياطي</strong><small id="homeBackupStatus">اعملي نسخة قبل أي تغيير كبير</small></div>
+    <b>←</b>
+  </button>
+  <button class="calendarLauncher" data-go="calendar">
+    <span>📅</span>
+    <div><strong>تقويم Bloomie</strong><small id="calendarHomeText">شوفي يومك كله في مكان واحد</small></div>
+    <b>←</b>
+  </button>
+  <button class="reminderLauncher" data-go="reminders">
+    <span>🔔</span>
+    <div><strong>تذكيرات Bloomie</strong><small id="reminderHomeText">فعّلي التذكيرات لمهامك وعاداتك</small></div>
+    <b id="reminderHomeBadge">0</b>
+  </button>
+  <button class="rewardLauncher" data-go="rewards">
+    <span>🏆</span>
+    <div><strong>إنجازاتك</strong><small id="rewardHomeText">كل خطوة صغيرة تحسب ✨</small></div>
+    <b id="rewardHomePoints">0</b>
+  </button>
+  <button class="privacyLauncher" data-go="privacy">
+    <span>🔒</span>
+    <div><strong>الخصوصية</strong><small id="privacyHomeText">فعّلي PIN لحماية شاشة Bloomie</small></div>
+    <b id="privacyHomeBadge">OFF</b>
+  </button>
+  <button class="appearanceLauncher" data-go="appearance">
+    <span id="appearanceLauncherIcon">🎨</span>
+    <div><strong>شكل Bloomie</strong><small id="appearanceHomeText">ألوان، خلفية، وشخصية Bloomie</small></div>
+    <b>←</b>
+  </button>
+  <button class="analyticsLauncher" data-go="analytics">
+    <span>📊</span>
+    <div><strong>ملخص الشهر</strong><small id="analyticsHomeText">شوفي تقدمك في مكان واحد</small></div>
+    <b>←</b>
+  </button>
+  <button class="quickLauncher" id="homeQuickAdd">
+    <span>＋</span>
+    <div><strong>إضافة سريعة</strong><small>مهمة، مصروف، فكرة أو ملاحظة من أي مكان</small></div>
+    <b>⚡</b>
+  </button>
+  <button class="shareLauncher" data-go="sharing">
+    <span>📤</span>
+    <div><strong>مشاركة خطتي</strong><small id="shareHomeText">اختاري فقط الأشياء اللي حابة تشاركيها</small></div>
     <b>←</b>
   </button>
 
@@ -61,6 +107,9 @@
     <button data-go="habits"><i>✨</i><span>مكتمل اليوم</span><strong id="habitsDoneHome">0</strong><em>استمري 💗</em></button>
     <button data-go="study"><i>🎓</i><span>دراسة اليوم</span><strong id="studyTodayHome">0</strong><em id="studyTodaySub">لا توجد جلسات</em></button>
     <button data-go="study"><i>📅</i><span>القادم</span><strong id="studyUpcomingHome">0</strong><em>هذا الأسبوع</em></button>
+    <button data-go="goals"><i>🎯</i><span>أهداف نشطة</span><strong id="goalsActiveHome">0</strong><em id="goalsActiveSub">ابدئي أول هدف</em></button>
+    <button data-go="goals" data-filter="completed"><i>🏆</i><span>أهداف مكتملة</span><strong id="goalsDoneHome">0</strong><em>خطوة بخطوة ✨</em></button>
+    <button data-go="mood"><i id="moodTodayHomeIcon">🌸</i><span>مزاج اليوم</span><strong id="moodTodayHome">—</strong><em id="moodTodaySub">سجّلي شعورك اليوم</em></button>
     <button data-go="notes"><i>📝</i><span>الملاحظات</span><strong id="notesCount">0</strong><em id="notesSub">اكتبي أول ملاحظة</em></button>
     <button data-go="ideas"><i>💡</i><span>الأفكار</span><strong id="ideasCount">0</strong><em id="ideasSub">احفظي أي فكرة</em></button>
   </div>
@@ -76,6 +125,10 @@
     <button class="peach" data-go="expenses"><i>🪙</i><strong>المصاريف</strong><span id="expenseCardText">ابدئي أول تسجيل</span></button>
     <button class="mint" data-go="habits"><i>🌿</i><strong>العادات</strong><span id="habitCardText">ابدئي أول عادة</span></button>
     <button class="blue" data-go="study"><i>🎓</i><strong>الدراسة</strong><span id="studyCardText">أضيفي أول جلسة</span></button>
+    <button class="pink" data-go="goals"><i>🎯</i><strong>الأهداف</strong><span id="goalCardText">ابدئي أول هدف</span></button>
+    <button class="lav" data-go="mood"><i>🌸</i><strong>المزاج</strong><span id="moodCardText">سجّلي مزاج اليوم</span></button>
+    <button class="peach" data-go="rewards"><i>🏆</i><strong>الإنجازات</strong><span id="rewardCardText">ابدئي تجمعي نقاط Bloomie</span></button>
+    <button class="blue" data-go="analytics"><i>📊</i><strong>إحصائياتي</strong><span id="analyticsCardText">ملخص هذا الشهر</span></button>
   </div>
 
   <div class="quote">💞 <span>المكان المرتب للأفكار يخلي بالك أهدى.</span></div>
@@ -83,15 +136,17 @@
 
 <section id="tasksView" class="view">
   <div class="taskHead">
-    <div class="row"><div><small>P02</small><h2>المهام</h2><p id="progressText">لا توجد مهام بعد</p></div><b>🐱💗</b></div>
+    <div class="row"><div><small>P10</small><h2>المهام</h2><p id="progressText">لا توجد مهام بعد</p></div><b>🐱💗</b></div>
     <div class="bar"><div id="progressBar"></div></div>
     <button id="addTask" class="primary">＋ إضافة مهمة جديدة</button>
+    <div class="p10Hint">🔁 المهام المتكررة تُنشأ تلقائيًا للأيام القادمة بدون ما تعيدي كتابتها.</div>
   </div>
   <div class="filters">
     <button class="filter active" data-task-filter="all">الكل</button>
     <button class="filter" data-task-filter="today">اليوم</button>
     <button class="filter" data-task-filter="pending">متبقية</button>
     <button class="filter" data-task-filter="completed">مكتملة</button>
+    <button class="filter" data-task-filter="recurring">🔁 متكررة</button>
   </div>
 
   <div class="smartFilterBar">
@@ -223,7 +278,7 @@
 <section id="habitsView" class="view">
   <div class="contentHead habitTheme">
     <div class="row">
-      <div><small>P05</small><h2>العادات</h2><p id="habitsSummary">ابني روتينك يومًا بيوم</p></div>
+      <div><small>P10</small><h2>العادات</h2><p id="habitsSummary">ابني روتينك يومًا بيوم</p></div>
       <b>🌿🐱</b>
     </div>
 
@@ -234,6 +289,7 @@
     </div>
 
     <button id="addHabit" class="primary habitBtn">＋ إضافة عادة جديدة</button>
+    <div class="p10Hint habitHint">🌿 اختاري نمط جاهز للتكرار، وتقدري توقفي أي عادة مؤقتًا بدون حذف سجلها.</div>
   </div>
 
   <section class="weekPanel">
@@ -249,6 +305,7 @@
     <button class="filter" data-habit-filter="today">اليوم</button>
     <button class="filter" data-habit-filter="completed">مكتملة اليوم</button>
     <button class="filter" data-habit-filter="pending">متبقية اليوم</button>
+    <button class="filter" data-habit-filter="paused">⏸ متوقفة</button>
   </div>
 
   <div class="searchBox standaloneSearch"><span>⌕</span><input id="habitSearch" type="search" placeholder="ابحثي في العادات..."></div>
@@ -302,6 +359,599 @@
 </section>
 
 
+
+
+
+
+
+
+
+
+
+<section id="sharingView" class="view">
+  <div class="contentHead sharingTheme">
+    <div class="row">
+      <div><small>P20</small><h2>مشاركة خطتي</h2><p>اختاري بالضبط إيش يطلع في المشاركة</p></div>
+      <b>📤🌸</b>
+    </div>
+  </div>
+
+  <section class="sharePresetPanel">
+    <div class="shareSectionHead">
+      <div><small>جاهز بسرعة</small><h3>اختاري نوع المشاركة</h3></div>
+    </div>
+    <div class="sharePresetGrid">
+      <button data-share-preset="today"><i>☀️</i><strong>خطة اليوم</strong><span>مهام + دراسة + عادات</span></button>
+      <button data-share-preset="tasks"><i>✅</i><strong>المهام</strong><span>قائمة مهام فقط</span></button>
+      <button data-share-preset="study"><i>🎓</i><strong>الدراسة</strong><span>جدول الدراسة فقط</span></button>
+      <button data-share-preset="custom"><i>✨</i><strong>مخصص</strong><span>اختاري المحتوى بنفسك</span></button>
+    </div>
+  </section>
+
+  <section class="shareSettingsPanel">
+    <div class="shareSectionHead">
+      <div><small>المحتوى</small><h3>إيش نشارك؟</h3></div>
+      <span id="shareSelectionCount">0 أقسام</span>
+    </div>
+
+    <div class="shareToggleGrid">
+      <label><input type="checkbox" id="shareTasks" checked><span><i>✅</i><b>المهام</b></span></label>
+      <label><input type="checkbox" id="shareStudy" checked><span><i>🎓</i><b>الدراسة</b></span></label>
+      <label><input type="checkbox" id="shareHabits" checked><span><i>🌿</i><b>العادات</b></span></label>
+      <label><input type="checkbox" id="shareGoals"><span><i>🎯</i><b>الأهداف</b></span></label>
+    </div>
+
+    <div class="shareFormRow">
+      <label>الفترة
+        <select id="shareRange">
+          <option value="today">اليوم</option>
+          <option value="week">7 أيام</option>
+          <option value="month">هذا الشهر</option>
+        </select>
+      </label>
+      <label>المكتمل
+        <select id="shareCompleted">
+          <option value="no">إخفاء المكتمل</option>
+          <option value="yes">إظهار المكتمل</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="sharePrivacyOptions">
+      <label><input type="checkbox" id="shareTimes" checked><span>🕒 إظهار الأوقات</span></label>
+      <label><input type="checkbox" id="shareCategories"><span>🏷️ إظهار التصنيفات</span></label>
+    </div>
+  </section>
+
+  <section class="sharePreviewPanel">
+    <div class="shareSectionHead">
+      <div><small>Preview</small><h3>معاينة قبل المشاركة</h3></div>
+      <button id="refreshSharePreview">↻ تحديث</button>
+    </div>
+    <pre id="sharePreview" class="sharePreview"></pre>
+  </section>
+
+  <section class="shareActionsPanel">
+    <button id="nativeSharePlan" class="primary sharePrimary">📤 مشاركة</button>
+    <div>
+      <button id="copySharePlan" class="secondary">📋 نسخ النص</button>
+      <button id="downloadSharePlan" class="secondary">⬇️ TXT</button>
+    </div>
+  </section>
+
+  <section class="sharePrivacyBox">
+    <div>🔒</div>
+    <div>
+      <strong>مشاركة انتقائية فقط</strong>
+      <p>Bloomie لا يضيف تلقائيًا الملاحظات، الأفكار، المصاريف، المزاج، PIN أو النسخ الاحتياطية إلى نص المشاركة. فقط الأقسام التي تختاريها فوق.</p>
+    </div>
+  </section>
+</section>
+
+<section id="analyticsView" class="view">
+  <div class="contentHead analyticsTheme">
+    <div class="row">
+      <div><small>P18</small><h2>إحصائياتي</h2><p id="analyticsSummary">ملخص شهري واضح بدون تعقيد</p></div>
+      <b>📊🌸</b>
+    </div>
+
+    <div class="analyticsMonthNav">
+      <button id="analyticsPrevMonth" aria-label="الشهر السابق">‹</button>
+      <label>
+        <span>الشهر</span>
+        <input id="analyticsMonth" type="month">
+      </label>
+      <button id="analyticsNextMonth" aria-label="الشهر التالي">›</button>
+    </div>
+    <button id="analyticsThisMonth" class="secondary analyticsThisMonth">العودة لهذا الشهر</button>
+  </div>
+
+  <section class="analyticsHero">
+    <div>
+      <small>ملخص</small>
+      <h3 id="analyticsMonthTitle">هذا الشهر</h3>
+      <p id="analyticsHeroText">ابدئي استخدام Bloomie وسيظهر تقدمك هنا.</p>
+    </div>
+    <div class="analyticsScore">
+      <strong id="analyticsActivityScore">0</strong>
+      <span>نشاط مسجل</span>
+    </div>
+  </section>
+
+  <section class="analyticsStatsGrid">
+    <article>
+      <i>✅</i><span>المهام</span><strong id="analyticsTaskRate">0%</strong><small id="analyticsTaskSub">0 من 0</small>
+    </article>
+    <article>
+      <i>🌿</i><span>العادات</span><strong id="analyticsHabitRate">0%</strong><small id="analyticsHabitSub">0 من 0</small>
+    </article>
+    <article>
+      <i>🎓</i><span>الدراسة</span><strong id="analyticsStudyHours">0 س</strong><small id="analyticsStudySub">0 جلسة مكتملة</small>
+    </article>
+    <article>
+      <i>🪙</i><span>المصاريف</span><strong id="analyticsExpenseTotal">0</strong><small id="analyticsIncomeSub">دخل 0</small>
+    </article>
+    <article>
+      <i>🎯</i><span>الأهداف</span><strong id="analyticsGoalRate">0%</strong><small id="analyticsGoalSub">0 من 0 مستهدفة</small>
+    </article>
+    <article>
+      <i>🌸</i><span>المزاج</span><strong id="analyticsMoodCommon">—</strong><small id="analyticsMoodSub">0 أيام مسجلة</small>
+    </article>
+  </section>
+
+  <section class="analyticsPanel">
+    <div class="analyticsSectionHead">
+      <div><small>مقارنة</small><h3>مقارنة بالشهر السابق</h3></div>
+      <span id="analyticsCompareLabel">—</span>
+    </div>
+    <div id="analyticsCompareGrid" class="analyticsCompareGrid"></div>
+  </section>
+
+  <section class="analyticsPanel">
+    <div class="analyticsSectionHead">
+      <div><small>Activity</small><h3>نشاط الشهر بالأسبوع</h3></div>
+      <span>✅ 🌿 🎓 🌸</span>
+    </div>
+    <div id="analyticsWeeklyChart" class="analyticsWeeklyChart"></div>
+    <div class="analyticsChartNote">كل عمود يجمع المهام المكتملة + تسجيلات العادات + الدراسة المكتملة + تسجيل المزاج.</div>
+  </section>
+
+  <section class="analyticsTwoCol">
+    <section class="analyticsPanel">
+      <div class="analyticsSectionHead">
+        <div><small>Tasks</small><h3>المهام حسب التصنيف</h3></div>
+      </div>
+      <div id="analyticsTaskCategories" class="analyticsBreakdown"></div>
+    </section>
+
+    <section class="analyticsPanel">
+      <div class="analyticsSectionHead">
+        <div><small>Money</small><h3>أكبر فئات المصروف</h3></div>
+      </div>
+      <div id="analyticsExpenseCategories" class="analyticsBreakdown"></div>
+    </section>
+  </section>
+
+  <section class="analyticsTwoCol">
+    <section class="analyticsPanel">
+      <div class="analyticsSectionHead">
+        <div><small>Mood</small><h3>توزيع المزاج</h3></div>
+      </div>
+      <div id="analyticsMoodBreakdown" class="moodAnalyticsGrid"></div>
+    </section>
+
+    <section class="analyticsPanel">
+      <div class="analyticsSectionHead">
+        <div><small>Habits</small><h3>أفضل متابعة للعادة</h3></div>
+      </div>
+      <div id="analyticsBestHabit" class="analyticsBestHabit"></div>
+    </section>
+  </section>
+
+  <section class="analyticsPanel">
+    <div class="analyticsSectionHead">
+      <div><small>Study</small><h3>الدراسة حسب المادة</h3></div>
+      <span id="analyticsStudyPlanned">0 دقيقة مخططة</span>
+    </div>
+    <div id="analyticsStudySubjects" class="analyticsBreakdown"></div>
+  </section>
+
+  <button id="copyMonthlySummary" class="copyAnalyticsBtn">📋 نسخ ملخص الشهر</button>
+
+  <div class="analyticsDataNote">
+    <strong>عن طريقة الحساب</strong>
+    <p>المهام والدراسة تُحسب حسب <b>تاريخ العنصر المجدول</b> لأن الإصدارات السابقة لا تحفظ وقت الإكمال الفعلي. معدل العادات يعتمد على جدول تكرار العادة الحالي وعلامات الإنجاز المحفوظة.</p>
+  </div>
+</section>
+
+<section id="appearanceView" class="view">
+  <div class="contentHead appearanceTheme">
+    <div class="row">
+      <div><small>P17</small><h2>شكل Bloomie</h2><p>اختاري الألوان والخلفية والشخصية اللي تحبيها</p></div>
+      <b>🎨🌸</b>
+    </div>
+  </div>
+
+  <section class="appearancePreview">
+    <div class="previewTop">
+      <div>
+        <small>معاينة مباشرة</small>
+        <h3>Bloomie <span id="previewMascot">🐱</span></h3>
+      </div>
+      <span id="previewThemeName">Bloom Pink</span>
+    </div>
+    <div class="previewCards">
+      <div><i>✅</i><b>مهامي</b><span>3 اليوم</span></div>
+      <div><i>🌷</i><b>روتيني</b><span>كل شيء مرتب</span></div>
+    </div>
+  </section>
+
+  <section class="appearancePanel">
+    <div class="appearanceSectionHead">
+      <div><small>Theme</small><h3>ألوان التطبيق</h3></div>
+      <span id="themeChoiceLabel">Bloom Pink</span>
+    </div>
+    <div class="themeGrid">
+      <button class="themeChoice" data-theme-choice="bloom">
+        <span class="themeSwatches"><i style="--s:#f4adc6"></i><i style="--s:#e7d9ff"></i><i style="--s:#fff7fb"></i></span>
+        <strong>Bloom Pink</strong><small>الستايل الأصلي</small>
+      </button>
+      <button class="themeChoice" data-theme-choice="lavender">
+        <span class="themeSwatches"><i style="--s:#ad95df"></i><i style="--s:#ddd3ff"></i><i style="--s:#faf8ff"></i></span>
+        <strong>Lavender Dream</strong><small>بنفسجي هادي</small>
+      </button>
+      <button class="themeChoice" data-theme-choice="mint">
+        <span class="themeSwatches"><i style="--s:#83c6a5"></i><i style="--s:#d8f2e5"></i><i style="--s:#f7fdf9"></i></span>
+        <strong>Mint Garden</strong><small>أخضر منعش</small>
+      </button>
+      <button class="themeChoice" data-theme-choice="sky">
+        <span class="themeSwatches"><i style="--s:#78aade"></i><i style="--s:#dcecff"></i><i style="--s:#f7fbff"></i></span>
+        <strong>Sky Cloud</strong><small>أزرق ناعم</small>
+      </button>
+      <button class="themeChoice" data-theme-choice="peach">
+        <span class="themeSwatches"><i style="--s:#eaa174"></i><i style="--s:#ffe0ca"></i><i style="--s:#fffaf6"></i></span>
+        <strong>Peach Glow</strong><small>خوخي دافي</small>
+      </button>
+    </div>
+  </section>
+
+  <section class="appearancePanel">
+    <div class="appearanceSectionHead">
+      <div><small>Background</small><h3>الخلفية</h3></div>
+      <span id="backgroundChoiceLabel">ناعمة</span>
+    </div>
+    <div class="backgroundGrid">
+      <button class="backgroundChoice" data-bg-choice="soft"><i class="bgPreview softBg"></i><strong>ناعمة</strong></button>
+      <button class="backgroundChoice" data-bg-choice="clean"><i class="bgPreview cleanBg"></i><strong>نظيفة</strong></button>
+      <button class="backgroundChoice" data-bg-choice="dots"><i class="bgPreview dotsBg"></i><strong>نقط كيوت</strong></button>
+      <button class="backgroundChoice" data-bg-choice="flowers"><i class="bgPreview flowersBg">✿</i><strong>زهور</strong></button>
+    </div>
+  </section>
+
+  <section class="appearancePanel">
+    <div class="appearanceSectionHead">
+      <div><small>Mascot</small><h3>شخصية Bloomie</h3></div>
+      <span id="mascotChoiceLabel">القطة</span>
+    </div>
+    <div class="mascotGrid">
+      <button class="mascotChoice" data-mascot-choice="cat" data-emoji="🐱"><b>🐱</b><span>القطة</span></button>
+      <button class="mascotChoice" data-mascot-choice="kitty" data-emoji="😺"><b>😺</b><span>Kitty</span></button>
+      <button class="mascotChoice" data-mascot-choice="bunny" data-emoji="🐰"><b>🐰</b><span>الأرنوبة</span></button>
+      <button class="mascotChoice" data-mascot-choice="bear" data-emoji="🐻"><b>🐻</b><span>الدبدوب</span></button>
+      <button class="mascotChoice" data-mascot-choice="flower" data-emoji="🌸"><b>🌸</b><span>Bloom</span></button>
+    </div>
+  </section>
+
+  <section class="appearancePanel compactAppearance">
+    <div class="appearanceSectionHead">
+      <div><small>Cards</small><h3>شكل البطاقات</h3></div>
+    </div>
+    <div class="cardStyleGrid">
+      <button data-card-style="round"><span class="cardDemo roundDemo"></span><strong>دائري</strong></button>
+      <button data-card-style="soft"><span class="cardDemo softDemo"></span><strong>ناعم</strong></button>
+      <button data-card-style="compact"><span class="cardDemo compactDemo"></span><strong>Compact</strong></button>
+    </div>
+  </section>
+
+  <button id="resetAppearance" class="resetAppearanceBtn">↺ رجوع لشكل Bloomie الأصلي</button>
+  <div class="appearanceNote">✨ التغييرات تُحفظ تلقائيًا على هذا الجهاز وتدخل في Backup من P17.</div>
+</section>
+
+<section id="privacyView" class="view">
+  <div class="contentHead privacyTheme">
+    <div class="row">
+      <div><small>P16</small><h2>الخصوصية</h2><p>قفل شاشة Bloomie وحماية تفاصيل التنبيهات</p></div>
+      <b>🔐🌸</b>
+    </div>
+  </div>
+
+  <section class="privacyStatusCard">
+    <div class="privacyShield" id="privacyShield">🔓</div>
+    <div class="privacyStatusMain">
+      <small>قفل التطبيق</small>
+      <h3 id="privacyStatusTitle">PIN غير مفعّل</h3>
+      <p id="privacyStatusText">يمكنك إضافة PIN من 4 إلى 6 أرقام.</p>
+    </div>
+    <span id="privacyStatusPill" class="privacyStatusPill">OFF</span>
+  </section>
+
+  <section class="privacyActionCard">
+    <div class="privacyActionIcon">🔢</div>
+    <div class="privacyActionBody">
+      <h3>PIN الخاص بـ Bloomie</h3>
+      <p>يُخزّن Bloomie بصمة مشفّرة للـPIN على هذا الجهاز، وليس الرقم نفسه.</p>
+    </div>
+    <div class="privacyButtons">
+      <button id="setupPin" class="primary privacyPrimary">تفعيل PIN</button>
+      <button id="changePin" class="secondary hidden">تغيير PIN</button>
+      <button id="removePin" class="secondary dangerSoft hidden">إزالة PIN</button>
+    </div>
+  </section>
+
+  <section class="privacySettingsCard">
+    <div class="privacySettingRow">
+      <div><strong>⏱️ القفل التلقائي</strong><small>بعد خروجك من Bloomie ثم رجوعك</small></div>
+      <select id="autoLockMinutes">
+        <option value="1">بعد دقيقة</option>
+        <option value="5">بعد 5 دقائق</option>
+        <option value="15">بعد 15 دقيقة</option>
+        <option value="30">بعد 30 دقيقة</option>
+      </select>
+    </div>
+
+    <div class="privacySettingRow">
+      <div><strong>🔔 تفاصيل التنبيهات</strong><small>إخفاء اسم المهمة على شاشة الجهاز</small></div>
+      <select id="hideNotificationDetails">
+        <option value="yes">إخفاء التفاصيل</option>
+        <option value="no">إظهار التفاصيل</option>
+      </select>
+    </div>
+  </section>
+
+  <button id="lockNow" class="lockNowBtn" disabled>🔒 قفل Bloomie الآن</button>
+
+  <section class="privacyInfoBox">
+    <strong>مهم</strong>
+    <p>PIN هنا هو <b>قفل شاشة داخل Bloomie</b>، وليس تشفيرًا كاملًا لبيانات localStorage. النسخ الاحتياطي لا يحفظ PIN ولا إعدادات القفل، لذلك لن ينتقل PIN إلى جهاز آخر.</p>
+  </section>
+</section>
+
+<section id="rewardsView" class="view">
+  <div class="contentHead rewardTheme">
+    <div class="row">
+      <div><small>P15</small><h2>إنجازاتي</h2><p id="rewardsSummary">كل خطوة صغيرة في Bloomie تتحول لتقدم واضح</p></div>
+      <b>🏆✨</b>
+    </div>
+
+    <section class="levelCard">
+      <div class="levelBadge"><span id="rewardLevelIcon">🌱</span><strong id="rewardLevel">1</strong></div>
+      <div class="levelMain">
+        <div class="levelTop"><div><small>مستواك</small><h3 id="rewardLevelName">بداية لطيفة</h3></div><b id="rewardPoints">0 نقطة</b></div>
+        <div class="levelProgress"><div id="rewardLevelBar"></div></div>
+        <p id="rewardNextLevel">100 نقطة للمستوى التالي</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="rewardStats">
+    <div><span>إنجازات مفتوحة</span><strong id="rewardUnlockedCount">0</strong><small>من أصل <b id="rewardTotalCount">0</b></small></div>
+    <div><span>سلسلة النشاط</span><strong id="activityStreak">0</strong><small>يوم</small></div>
+    <div><span>المكتمل</span><strong id="rewardCompletedItems">0</strong><small>عنصر</small></div>
+  </section>
+
+  <section class="gardenPanel">
+    <div class="rewardSectionHead">
+      <div><small>حديقة Bloomie</small><h3>حديقتك تكبر مع إنجازاتك 🌷</h3></div>
+      <span id="gardenStageLabel">بذرة</span>
+    </div>
+    <div id="gardenScene" class="gardenScene" aria-label="حديقة Bloomie"></div>
+    <p id="gardenHint" class="gardenHint">كمّلي مهامك وعاداتك عشان تتفتح الحديقة أكثر.</p>
+  </section>
+
+  <section class="badgesPanel">
+    <div class="rewardSectionHead">
+      <div><small>Badges</small><h3>الشارات</h3></div>
+      <span id="badgesProgress">0 / 0</span>
+    </div>
+    <div id="badgeGrid" class="badgeGrid"></div>
+  </section>
+
+  <section class="pointsGuide">
+    <div class="rewardSectionHead">
+      <div><small>كيف تزيد النقاط؟</small><h3>كل إنجاز له قيمة</h3></div>
+    </div>
+    <div class="pointsGuideGrid">
+      <div><b>✅ +10</b><span>مهمة مكتملة</span></div>
+      <div><b>🌿 +5</b><span>إكمال عادة</span></div>
+      <div><b>🎓 +15</b><span>جلسة دراسة مكتملة</span></div>
+      <div><b>🎯 +50</b><span>هدف مكتمل</span></div>
+      <div><b>🌸 +2</b><span>تسجيل مزاج</span></div>
+    </div>
+  </section>
+</section>
+
+<section id="moodView" class="view">
+  <div class="contentHead moodTheme">
+    <div class="row">
+      <div><small>P14</small><h2>مزاجي</h2><p id="moodSummary">سجّلي شعورك بلطف وشوفي نمط أيامك</p></div>
+      <b>🌸☁️</b>
+    </div>
+    <button id="addMood" class="primary moodBtn">＋ تسجيل مزاج اليوم</button>
+  </div>
+
+  <section id="moodTodayCard" class="moodTodayCard">
+    <div class="moodTodayIcon" id="moodTodayIcon">🌷</div>
+    <div>
+      <small>اليوم</small>
+      <h3 id="moodTodayTitle">كيف كان يومك؟</h3>
+      <p id="moodTodayText">اختاري الشعور الأقرب لكِ واكتبي ملاحظة لو حبيتي.</p>
+    </div>
+    <button id="editTodayMood">تسجيل</button>
+  </section>
+
+  <section class="moodStats">
+    <div><span>سلسلة التسجيل</span><strong id="moodStreak">0</strong><small>يوم</small></div>
+    <div><span>أيام هذا الشهر</span><strong id="moodMonthCount">0</strong><small>يوم مسجل</small></div>
+    <div><span>الأكثر تكرارًا</span><strong id="moodCommonEmoji">—</strong><small id="moodCommonLabel">لا بيانات</small></div>
+  </section>
+
+  <section class="moodWeekPanel">
+    <div class="moodSectionHead">
+      <div><small>آخر 7 أيام</small><h3>أسبوعك</h3></div>
+      <span id="moodWeekSummary">ابدئي أول تسجيل</span>
+    </div>
+    <div id="moodWeekStrip" class="moodWeekStrip"></div>
+  </section>
+
+  <section class="moodMonthPanel">
+    <div class="moodMonthNav">
+      <button id="moodPrevMonth" aria-label="الشهر السابق">‹</button>
+      <div><strong id="moodMonthLabel">الشهر</strong><small id="moodYearLabel">السنة</small></div>
+      <button id="moodNextMonth" aria-label="الشهر التالي">›</button>
+    </div>
+    <div class="moodWeekNames"><span>سبت</span><span>أحد</span><span>اثن</span><span>ثلا</span><span>أرب</span><span>خمي</span><span>جمع</span></div>
+    <div id="moodMonthGrid" class="moodMonthGrid"></div>
+    <div id="moodInsight" class="moodInsight">🌸 سجّلي عدة أيام ليظهر لكِ ملخص بسيط للشهر.</div>
+  </section>
+
+  <section class="moodHistoryPanel">
+    <div class="moodSectionHead"><div><small>سجلّك</small><h3>آخر التسجيلات</h3></div></div>
+    <div id="moodHistory" class="moodHistory"></div>
+  </section>
+</section>
+
+<section id="goalsView" class="view">
+  <div class="contentHead goalTheme">
+    <div class="row">
+      <div><small>P13</small><h2>أهدافي</h2><p id="goalsSummary">حوّلي أهدافك الكبيرة لخطوات صغيرة وواضحة</p></div>
+      <b>🎯🌸</b>
+    </div>
+    <button id="addGoal" class="primary goalBtn">＋ هدف جديد</button>
+  </div>
+
+  <section class="goalStats">
+    <div><span>نشطة</span><strong id="goalActiveCount">0</strong></div>
+    <div><span>مكتملة</span><strong id="goalCompletedCount">0</strong></div>
+    <div><span>متوسط التقدم</span><strong id="goalAverageProgress">0%</strong></div>
+  </section>
+
+  <div class="filters goalFilters">
+    <button class="filter active" data-goal-filter="all">الكل</button>
+    <button class="filter" data-goal-filter="active">نشطة</button>
+    <button class="filter" data-goal-filter="completed">مكتملة</button>
+    <button class="filter" data-goal-filter="due">موعدها قريب</button>
+  </div>
+
+  <div class="smartFilterBar goalSmartBar">
+    <div class="searchBox compactSearch"><span>⌕</span><input id="goalSearch" type="search" placeholder="ابحثي في أهدافك..."></div>
+    <select id="goalCategoryFilter" aria-label="تصنيف الهدف">
+      <option value="all">كل التصنيفات</option>
+      <option value="personal">شخصي</option>
+      <option value="study">دراسة</option>
+      <option value="health">صحة</option>
+      <option value="money">مال</option>
+      <option value="work">شغل</option>
+      <option value="other">أخرى</option>
+    </select>
+  </div>
+
+  <div id="goalList" class="goalList"></div>
+</section>
+
+<section id="remindersView" class="view">
+  <div class="contentHead reminderTheme">
+    <div class="row">
+      <div><small>P12</small><h2>تذكيرات Bloomie</h2><p id="reminderSummary">مهامك ودراستك وعاداتك في الوقت المناسب</p></div>
+      <b>🔔🌸</b>
+    </div>
+
+    <section class="notificationPermissionCard">
+      <div class="permissionIcon">📱</div>
+      <div class="permissionText">
+        <strong id="notificationPermissionTitle">تنبيهات الجهاز</strong>
+        <small id="notificationPermissionText">اضغطي تفعيل حتى يسمح الآيفون لـBloomie بإظهار التنبيهات.</small>
+      </div>
+      <button id="enableNotifications" class="primary reminderEnableBtn">تفعيل</button>
+    </section>
+
+    <div class="reminderSystemNote">
+      <span>💡</span>
+      <p>Bloomie تطبيق ويب محلي: التنبيه المجدول يعمل أثناء تشغيل التطبيق، ولو كان مغلقًا بالكامل تظهر التذكيرات المتأخرة عند فتحه من جديد. لا يوجد سيرفر Push في هذه النسخة.</p>
+    </div>
+
+    <div class="reminderTopActions">
+      <button id="testNotification" class="secondary">🔔 اختبار تنبيه</button>
+      <button id="refreshReminders" class="secondary">↻ تحديث القائمة</button>
+    </div>
+  </div>
+
+  <div class="filters reminderFilters">
+    <button class="filter active" data-reminder-filter="all">الكل</button>
+    <button class="filter" data-reminder-filter="today">اليوم</button>
+    <button class="filter" data-reminder-filter="overdue">حان وقتها</button>
+    <button class="filter" data-reminder-filter="upcoming">قادمة</button>
+  </div>
+
+  <section class="reminderStats">
+    <div><span>اليوم</span><strong id="reminderTodayCount">0</strong></div>
+    <div><span>حان وقتها</span><strong id="reminderDueCount">0</strong></div>
+    <div><span>الأسبوع</span><strong id="reminderWeekCount">0</strong></div>
+  </section>
+
+  <div id="reminderList" class="reminderList"></div>
+</section>
+
+<section id="calendarView" class="view">
+  <div class="contentHead calendarTheme">
+    <div class="row">
+      <div><small>P11</small><h2>تقويم Bloomie</h2><p id="calendarSummary">مهامك ودراستك وعاداتك في مكان واحد</p></div>
+      <b>📅🌸</b>
+    </div>
+
+    <div class="calendarNav">
+      <button id="calendarPrev" aria-label="الشهر السابق">‹</button>
+      <div><strong id="calendarMonthLabel">الشهر</strong><small id="calendarYearLabel">السنة</small></div>
+      <button id="calendarNext" aria-label="الشهر التالي">›</button>
+    </div>
+    <button id="calendarToday" class="secondary calendarTodayBtn">العودة إلى اليوم</button>
+  </div>
+
+  <div class="filters calendarFilters">
+    <button class="filter active" data-calendar-type="all">الكل</button>
+    <button class="filter" data-calendar-type="tasks">✅ مهام</button>
+    <button class="filter" data-calendar-type="study">🎓 دراسة</button>
+    <button class="filter" data-calendar-type="habits">🌿 عادات</button>
+    <button class="filter" data-calendar-type="goals">🎯 أهداف</button>
+    <button class="filter" data-calendar-type="moods">🌸 مزاج</button>
+  </div>
+
+  <section class="calendarPanel">
+    <div class="calendarWeekNames">
+      <span>سبت</span><span>أحد</span><span>اثن</span><span>ثلا</span><span>أرب</span><span>خمي</span><span>جمع</span>
+    </div>
+    <div id="calendarGrid" class="calendarGrid"></div>
+    <div class="calendarLegend">
+      <span><i class="dot taskDot"></i>مهام</span>
+      <span><i class="dot studyDot"></i>دراسة</span>
+      <span><i class="dot habitDot"></i>عادات</span>
+      <span><i class="dot goalDot"></i>أهداف</span>
+      <span><i class="dot moodDot"></i>مزاج</span>
+    </div>
+  </section>
+
+  <section class="agendaPanel">
+    <div class="agendaHead">
+      <div><small>اليوم المحدد</small><h3 id="agendaDateLabel">اليوم</h3></div>
+      <div class="agendaQuick">
+        <button id="calendarAddTask">＋ مهمة</button>
+        <button id="calendarAddStudy">＋ دراسة</button>
+      </div>
+    </div>
+    <div id="agendaSummary" class="agendaSummary"></div>
+    <div id="agendaList" class="agendaList"></div>
+  </section>
+</section>
+
 <section id="searchView" class="view">
   <div class="contentHead searchTheme">
     <div class="row">
@@ -319,6 +969,8 @@
   <div class="filters globalTypeFilters">
     <button class="filter active" data-global-type="all">الكل</button>
     <button class="filter" data-global-type="tasks">مهام</button>
+    <button class="filter" data-global-type="goals">أهداف</button>
+    <button class="filter" data-global-type="moods">مزاج</button>
     <button class="filter" data-global-type="notes">ملاحظات</button>
     <button class="filter" data-global-type="ideas">أفكار</button>
     <button class="filter" data-global-type="expenses">مصاريف</button>
@@ -364,6 +1016,8 @@
       <div><span>حركات مالية</span><strong id="backupTransactionsCount">0</strong></div>
       <div><span>عادات</span><strong id="backupHabitsCount">0</strong></div>
       <div><span>دراسة</span><strong id="backupStudyCount">0</strong></div>
+      <div><span>أهداف</span><strong id="backupGoalsCount">0</strong></div>
+      <div><span>مزاج</span><strong id="backupMoodsCount">0</strong></div>
     </div>
 
     <div class="lastBackupRow">
@@ -376,7 +1030,7 @@
     <div class="backupActionIcon">📤</div>
     <div class="backupActionBody">
       <h3>تصدير كل البيانات</h3>
-      <p>ينشئ ملف JSON واحد يحتوي على المهام والملاحظات والأفكار والمصاريف والعادات والدراسة والإعدادات.</p>
+      <p>ينشئ ملف JSON واحد يحتوي على المهام والأهداف والمزاج والملاحظات والأفكار والمصاريف والعادات والدراسة والإعدادات.</p>
     </div>
     <button id="exportBackup" class="primary backupBtn">إنشاء نسخة احتياطية</button>
   </section>
@@ -416,6 +1070,7 @@
   </div>
   <button class="moreSearchCard" data-go="search"><span>🔎</span><div><strong>البحث الشامل</strong><small>ابحثي في كل أقسام التطبيق</small></div><b>←</b></button>
   <button class="moreSearchCard backupMoreCard" data-go="backup"><span>💾</span><div><strong>النسخ الاحتياطي</strong><small id="moreBackupText">احفظي نسخة من بياناتك</small></div><b>←</b></button>
+  <button class="moreSearchCard reminderMoreCard" data-go="reminders"><span>🔔</span><div><strong>التذكيرات</strong><small id="moreReminderText">المهام والدراسة والعادات</small></div><b>←</b></button>
   <section class="launchPanel">
     <div class="launchIconWrap"><img src="./apple-touch-icon.png" alt="أيقونة التطبيق"></div>
     <div class="launchText">
@@ -427,11 +1082,21 @@
   </section>
 
   <section class="aboutPanel">
-    <div><span>✨</span><strong>الإصدار</strong><small>1.1 — P09.1</small></div>
+    <div><span>✨</span><strong>الإصدار</strong><small>2.2 — P20</small></div>
     <div><span>📱</span><strong>العمل</strong><small>PWA على iPhone</small></div>
     <div><span>🔒</span><strong>البيانات</strong><small>محلية على جهازك</small></div>
   </section>
   <div class="moreGrid">
+    <button class="pink" data-go="goals"><i>🎯</i><strong>الأهداف</strong><span id="moreGoalsText">ابدئي أول هدف</span></button>
+    <button class="lav" data-go="mood"><i>🌸</i><strong>المزاج</strong><span id="moreMoodText">سجّلي مزاج اليوم</span></button>
+    <button class="peach" data-go="rewards"><i>🏆</i><strong>الإنجازات</strong><span id="moreRewardText">ابدئي تجمعي نقاط</span></button>
+    <button class="blue" data-go="privacy"><i>🔒</i><strong>الخصوصية</strong><span id="morePrivacyText">PIN غير مفعّل</span></button>
+    <button class="lav" data-go="appearance"><i>🎨</i><strong>شكل Bloomie</strong><span id="moreAppearanceText">Bloom Pink</span></button>
+    <button class="blue" data-go="analytics"><i>📊</i><strong>الإحصائيات</strong><span id="moreAnalyticsText">ملخص هذا الشهر</span></button>
+    <button class="pink" id="moreQuickAdd"><i>⚡</i><strong>إضافة سريعة</strong><span>مهمة، مصروف، فكرة أو ملاحظة</span></button>
+    <button class="blue" data-go="sharing"><i>📤</i><strong>مشاركة خطتي</strong><span id="moreShareText">اختاري اللي حابة تشاركيه</span></button>
+    <button class="blue" data-go="calendar"><i>📅</i><strong>التقويم</strong><span>كل يومك في شاشة واحدة</span></button>
+    <button class="peach" data-go="expenses"><i>🪙</i><strong>المصاريف</strong><span>الدخل والمصروفات</span></button>
     <button class="lav" data-go="notes"><i>📝</i><strong>الملاحظات</strong><span id="moreNotesText">ملاحظاتك المحفوظة</span></button>
     <button class="yellow" data-go="ideas"><i>💡</i><strong>الأفكار</strong><span id="moreIdeasText">أفكارك المحفوظة</span></button>
     <button class="blue" data-go="study"><i>🎓</i><strong>الدراسة</strong><span id="moreStudyText">أضيفي أول جلسة</span></button>
@@ -449,14 +1114,16 @@
 
 <div class="launchFooter">
   <span>🌸</span>
-  <span>Bloomie • v1.1</span>
+  <span>Bloomie • v2.2</span>
   <span>🐱</span>
 </div>
+
+<button id="quickAddFab" class="quickAddFab" aria-label="إضافة سريعة" title="إضافة سريعة">＋</button>
 
 <nav>
   <button class="nav active" data-go="home">🏠<span>الرئيسية</span></button>
   <button class="nav" data-go="tasks">✅<span>المهام</span></button>
-  <button class="nav" data-go="expenses">🪙<span>المصاريف</span></button>
+  <button class="nav" data-go="calendar">📅<span>التقويم</span></button>
   <button class="nav" data-go="habits">🌿<span>العادات</span></button>
   <button class="nav" data-go="more">•••<span>المزيد</span></button>
 </nav>
@@ -473,10 +1140,60 @@
         <label>التاريخ<input id="taskDate" type="date" required></label>
         <label>الوقت<input id="taskTime" type="time"></label>
       </div>
+      <label>التذكير
+        <select id="taskReminder">
+          <option value="none">بدون تذكير</option>
+          <option value="at_time">في وقت المهمة</option>
+          <option value="five_min">قبلها بـ 5 دقائق</option>
+          <option value="fifteen_min">قبلها بـ 15 دقيقة</option>
+          <option value="thirty_min">قبلها بـ 30 دقيقة</option>
+          <option value="one_hour">قبلها بساعة</option>
+          <option value="one_day">قبلها بيوم</option>
+        </select>
+      </label>
       <div class="formRow">
         <label>الأولوية<select id="taskPriority"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">عالية</option></select></label>
         <label>التصنيف<select id="taskCategory"><option value="personal">شخصي</option><option value="study">دراسة</option><option value="home">البيت</option><option value="work">شغل</option><option value="other">أخرى</option></select></label>
       </div>
+
+      <section class="repeatBox">
+        <div class="repeatTitle"><span>🔁</span><div><strong>تكرار المهمة</strong><small>اكتبيها مرة وBloomie يكررها لكِ</small></div></div>
+        <div class="formRow">
+          <label>التكرار
+            <select id="taskRepeat">
+              <option value="none">بدون تكرار</option>
+              <option value="daily">كل يوم</option>
+              <option value="weekly">كل أسبوع</option>
+              <option value="monthly">كل شهر</option>
+              <option value="custom">أيام محددة من الأسبوع</option>
+            </select>
+          </label>
+          <label>ينتهي في
+            <input id="taskRepeatEnd" type="date">
+          </label>
+        </div>
+
+        <fieldset id="taskRepeatDaysField" class="daysField taskRepeatDaysField hidden">
+          <legend>اختاري أيام التكرار</legend>
+          <div class="daysPicker taskRepeatDaysPicker">
+            <label><input type="checkbox" value="6"><span>سبت</span></label>
+            <label><input type="checkbox" value="0"><span>أحد</span></label>
+            <label><input type="checkbox" value="1"><span>اثن</span></label>
+            <label><input type="checkbox" value="2"><span>ثلا</span></label>
+            <label><input type="checkbox" value="3"><span>أرب</span></label>
+            <label><input type="checkbox" value="4"><span>خمي</span></label>
+            <label><input type="checkbox" value="5"><span>جمع</span></label>
+          </div>
+        </fieldset>
+
+        <label id="taskEditScopeWrap" class="hidden">عند تعديل مهمة متكررة
+          <select id="taskEditScope">
+            <option value="single">هذه المهمة فقط</option>
+            <option value="future">هذه وكل التكرارات القادمة</option>
+          </select>
+        </label>
+      </section>
+
       <label>ملاحظة اختيارية<textarea id="taskNote" rows="3" maxlength="180" placeholder="أي تفاصيل إضافية..."></textarea></label>
       <button class="primary" type="submit" id="saveTask">حفظ المهمة 💗</button>
     </form>
@@ -579,9 +1296,18 @@
         </select>
       </label>
 
+      <label>نمط التكرار
+        <select id="habitPreset">
+          <option value="daily">كل يوم</option>
+          <option value="weekdays">أيام الأسبوع (أحد–خميس)</option>
+          <option value="weekends">نهاية الأسبوع (جمعة–سبت)</option>
+          <option value="custom">مخصص</option>
+        </select>
+      </label>
+
       <fieldset class="daysField">
         <legend>أيام التكرار</legend>
-        <div class="daysPicker">
+        <div class="daysPicker habitDaysPicker">
           <label><input type="checkbox" value="6" checked><span>سبت</span></label>
           <label><input type="checkbox" value="0" checked><span>أحد</span></label>
           <label><input type="checkbox" value="1" checked><span>اثن</span></label>
@@ -591,6 +1317,21 @@
           <label><input type="checkbox" value="5" checked><span>جمع</span></label>
         </div>
       </fieldset>
+
+      <section class="habitReminderBox">
+        <div class="repeatTitle"><span>🔔</span><div><strong>تذكير العادة</strong><small>في أيام العادة المحددة فقط</small></div></div>
+        <div class="formRow">
+          <label>التذكير
+            <select id="habitReminder">
+              <option value="none">بدون تذكير</option>
+              <option value="enabled">فعّال</option>
+            </select>
+          </label>
+          <label>وقت التذكير
+            <input id="habitReminderTime" type="time" value="09:00">
+          </label>
+        </div>
+      </section>
 
       <label>ملاحظة اختيارية
         <textarea id="habitNote" rows="3" maxlength="180" placeholder="مثال: 8 أكواب خلال اليوم"></textarea>
@@ -651,10 +1392,13 @@
         <label>المدة بالدقائق
           <input id="studyDuration" type="number" min="0" max="720" step="5" inputmode="numeric" placeholder="60">
         </label>
-        <label>التذكير داخل التطبيق
+        <label>التذكير
           <select id="studyReminder">
-            <option value="none">بدون</option>
-            <option value="same_day">في نفس اليوم</option>
+            <option value="none">بدون تذكير</option>
+            <option value="at_time">في وقت الموعد</option>
+            <option value="fifteen_min">قبلها بـ 15 دقيقة</option>
+            <option value="thirty_min">قبلها بـ 30 دقيقة</option>
+            <option value="one_hour">قبلها بساعة</option>
             <option value="one_day">قبلها بيوم</option>
             <option value="two_days">قبلها بيومين</option>
           </select>
@@ -670,6 +1414,184 @@
   </div>
 </div>
 
+
+
+
+
+
+<!-- QUICK ADD MODAL -->
+<div id="quickAddModal" class="modal hidden quickAddModal">
+  <div class="sheet quickAddSheet">
+    <div class="modalTop">
+      <div><small>P19 • Quick Add</small><h2>إضافة سريعة ⚡</h2></div>
+      <button data-close="quickAddModal">✕</button>
+    </div>
+
+    <p class="quickAddIntro">اختاري اللي حابة تضيفيه، وBloomie يفتح لكِ الفورم المناسب مباشرة.</p>
+
+    <div class="quickAddGrid">
+      <button type="button" data-quick-type="task">
+        <i>✅</i><strong>مهمة</strong><span>لليوم مباشرة</span>
+      </button>
+      <button type="button" data-quick-type="expense">
+        <i>🪙</i><strong>مصروف</strong><span>تسجيل صرف سريع</span>
+      </button>
+      <button type="button" data-quick-type="idea">
+        <i>💡</i><strong>فكرة</strong><span>احفظيها قبل ما تنسي</span>
+      </button>
+      <button type="button" data-quick-type="note">
+        <i>📝</i><strong>ملاحظة</strong><span>اكتبيها فورًا</span>
+      </button>
+    </div>
+
+    <div class="quickAddMore">
+      <small>اختصارات إضافية</small>
+      <div>
+        <button type="button" data-quick-type="study">🎓 دراسة</button>
+        <button type="button" data-quick-type="goal">🎯 هدف</button>
+        <button type="button" data-quick-type="habit">🌿 عادة</button>
+        <button type="button" data-quick-type="mood">🌸 مزاج</button>
+      </div>
+    </div>
+
+    <div class="quickAddHint">💡 زر ＋ يظل ظاهرًا أسفل Bloomie عشان تضيفي أي شيء بدون الرجوع للرئيسية.</div>
+  </div>
+</div>
+
+<!-- PRIVACY PIN MODAL -->
+<div id="pinModal" class="modal hidden">
+  <div class="sheet pinSheet">
+    <div class="modalTop">
+      <div><small>خصوصية Bloomie</small><h2 id="pinModalTitle">تفعيل PIN</h2></div>
+      <button data-close="pinModal">✕</button>
+    </div>
+
+    <form id="pinForm">
+      <div id="currentPinWrap" class="hidden">
+        <label>PIN الحالي
+          <input id="currentPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" placeholder="••••">
+        </label>
+      </div>
+
+      <label>PIN الجديد
+        <input id="newPin" type="password" inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="6" autocomplete="new-password" placeholder="4 إلى 6 أرقام" required>
+      </label>
+
+      <label>تأكيد PIN
+        <input id="confirmPin" type="password" inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="6" autocomplete="new-password" placeholder="أعيدي كتابة الرقم" required>
+      </label>
+
+      <div class="pinHint">استخدمي رقمًا تتذكريه. لا يوجد استرجاع للـPIN من داخل Bloomie.</div>
+      <button class="primary privacyPrimary" type="submit" id="savePin">حفظ PIN 🔒</button>
+    </form>
+  </div>
+</div>
+
+<!-- REMOVE PIN MODAL -->
+<div id="removePinModal" class="modal hidden">
+  <div class="sheet pinSheet">
+    <div class="modalTop">
+      <div><small>إلغاء قفل Bloomie</small><h2>إزالة PIN</h2></div>
+      <button data-close="removePinModal">✕</button>
+    </div>
+    <form id="removePinForm">
+      <label>أدخلي PIN الحالي
+        <input id="removePinCurrent" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" placeholder="••••" required>
+      </label>
+      <button class="primary dangerButton" type="submit">إزالة القفل</button>
+    </form>
+  </div>
+</div>
+
+<!-- MOOD MODAL -->
+<div id="moodModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop">
+      <div><small>لحظة صغيرة لنفسك</small><h2 id="moodModalTitle">تسجيل المزاج</h2></div>
+      <button data-close="moodModal">✕</button>
+    </div>
+
+    <form id="moodForm">
+      <input id="moodId" type="hidden">
+
+      <label>اليوم
+        <input id="moodDate" type="date" required>
+      </label>
+
+      <fieldset class="moodPickerField">
+        <legend>كيف كان شعورك؟</legend>
+        <input id="moodValue" type="hidden" required>
+        <div class="moodPicker">
+          <button type="button" data-mood-choice="great"><span>😍</span><small>رائع</small></button>
+          <button type="button" data-mood-choice="good"><span>😊</span><small>كويس</small></button>
+          <button type="button" data-mood-choice="okay"><span>😌</span><small>عادي</small></button>
+          <button type="button" data-mood-choice="low"><span>😕</span><small>ثقيل</small></button>
+          <button type="button" data-mood-choice="bad"><span>😢</span><small>صعب</small></button>
+        </div>
+      </fieldset>
+
+      <label>ملاحظة اختيارية
+        <textarea id="moodNote" rows="4" maxlength="400" placeholder="إيش صار اليوم؟ أو إيش حابة تتذكري؟"></textarea>
+      </label>
+
+      <div class="moodPrivacyNote">🔒 التسجيل محفوظ محليًا على جهازك مثل باقي بيانات Bloomie.</div>
+      <button class="primary moodBtn" type="submit" id="saveMood">حفظ التسجيل 🌸</button>
+    </form>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div id="goalModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop">
+      <div><small>هدفك الكبير بخطوات صغيرة</small><h2 id="goalModalTitle">هدف جديد</h2></div>
+      <button data-close="goalModal">✕</button>
+    </div>
+
+    <form id="goalForm">
+      <input type="hidden" id="goalId">
+
+      <label>اسم الهدف
+        <input id="goalTitle" maxlength="90" placeholder="مثال: أخلص كورس الإنجليزي" required>
+      </label>
+
+      <div class="formRow">
+        <label>التصنيف
+          <select id="goalCategory">
+            <option value="personal">شخصي</option>
+            <option value="study">دراسة</option>
+            <option value="health">صحة</option>
+            <option value="money">مال</option>
+            <option value="work">شغل</option>
+            <option value="other">أخرى</option>
+          </select>
+        </label>
+        <label>الموعد المستهدف
+          <input id="goalTargetDate" type="date">
+        </label>
+      </div>
+
+      <section class="goalProgressEditor">
+        <div class="goalProgressEditorHead">
+          <div><strong>التقدم اليدوي</strong><small>يُستخدم إذا لم تضيفي خطوات</small></div>
+          <b id="goalProgressValue">0%</b>
+        </div>
+        <input id="goalProgress" type="range" min="0" max="100" step="5" value="0">
+      </section>
+
+      <label>خطوات الهدف
+        <textarea id="goalSteps" rows="6" maxlength="1200" placeholder="اكتبي كل خطوة في سطر منفصل&#10;مثال:&#10;أكمل الوحدة الأولى&#10;أحل 3 تمارين&#10;أعمل اختبار تجريبي"></textarea>
+        <small class="fieldHelp">لو أضفتِ خطوات، Bloomie يحسب التقدم تلقائيًا حسب الخطوات المكتملة.</small>
+      </label>
+
+      <label>ملاحظة اختيارية
+        <textarea id="goalNote" rows="3" maxlength="400" placeholder="ليه الهدف مهم لكِ؟"></textarea>
+      </label>
+
+      <button class="primary goalBtn" type="submit" id="saveGoal">حفظ الهدف 🎯</button>
+    </form>
+  </div>
+</div>
 
 <!-- INSTALL HELP -->
 <div id="installModal" class="modal hidden">
@@ -696,6 +1618,25 @@
 </div>
 
 <div id="toast" class="toast hidden"></div>
+
+<div id="privacyLock" class="privacyLock hidden" role="dialog" aria-modal="true" aria-label="Bloomie مقفلة">
+  <div class="lockBackdropDecor lockFlowerOne">🌸</div>
+  <div class="lockBackdropDecor lockFlowerTwo">🌷</div>
+  <div class="lockCard">
+    <div class="lockCat">🐱</div>
+    <small>Bloomie</small>
+    <h2>التطبيق مقفول 🔒</h2>
+    <p>أدخلي PIN لفتح بياناتك.</p>
+
+    <form id="unlockForm">
+      <input id="unlockPin" class="unlockPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="current-password" placeholder="••••" aria-label="PIN" required>
+      <button class="primary privacyPrimary" type="submit">فتح Bloomie</button>
+    </form>
+
+    <div id="unlockMessage" class="unlockMessage">PIN من 4 إلى 6 أرقام</div>
+  </div>
+</div>
+
 <script src="./script.js"></script>
 </body>
 </html>
