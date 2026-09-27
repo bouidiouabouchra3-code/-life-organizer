@@ -1,4 +1,4 @@
-const CACHE="life-organizer-p09-v1";
+const CACHE="bloomie-p09-1-v1";
 const ASSETS=[
   "./",
   "./index.html",

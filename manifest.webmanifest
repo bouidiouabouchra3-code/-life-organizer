@@ -1,6 +1,6 @@
 {
-  "name": "منظم حياتي",
-  "short_name": "منظم حياتي",
+  "name": "Bloomie",
+  "short_name": "Bloomie",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -8,7 +8,7 @@
   "theme_color": "#f8dce7",
   "lang": "ar",
   "dir": "rtl",
-  "description": "تطبيق شخصي لطيف وعملي لتنظيم المهام والمصاريف والملاحظات والعادات والدراسة والأفكار.",
+  "description": "Bloomie — منظم حياة شخصي لطيف وعملي للمهام والمصاريف والملاحظات والعادات والدراسة والأفكار.",
   "orientation": "portrait",
   "icons": [
     {

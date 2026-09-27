@@ -202,3 +202,9 @@ button{transition:transform .12s ease,opacity .12s ease}
 button:active{transform:scale(.985)}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 @media(max-width:380px){.aboutPanel{grid-template-columns:1fr}.launchPanel{grid-template-columns:auto 1fr}}
+
+/* P09.1 — BLOOMIE REBRAND */
+.brandBlock{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.brandTagline{font-size:9px;color:#c77c9d;font-weight:800;margin-top:-1px}
+.brandTitle h1{letter-spacing:.1px}
+.versionBadge{background:#f6dff0;color:#8f5074}

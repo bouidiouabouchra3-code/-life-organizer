@@ -6,8 +6,8 @@ let currency=localStorage.getItem("lifeOrganizer.currency.v1")||"ج.م";
 
 const BACKUP_META_KEY="lifeOrganizer.backupMeta.v1";
 const BACKUP_FORMAT_VERSION=1;
-const APP_VERSION="1.0";
-const PATCH_VERSION="P09";
+const APP_VERSION="1.1";
+const PATCH_VERSION="P09.1";
 let pendingImportData=null;
 
 const $=id=>document.getElementById(id);
@@ -734,5 +734,5 @@ if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serv
 header();renderAll();go("home");
 if(localStorage.getItem("lifeOrganizer.lastSeenVersion")!==APP_VERSION){
   localStorage.setItem("lifeOrganizer.lastSeenVersion",APP_VERSION);
-  setTimeout(()=>toast("نسخة الإطلاق v1.0 جاهزة 🌸"),450);
+  setTimeout(()=>toast("Bloomie v1.1 جاهزة 🌸"),450);
 }
