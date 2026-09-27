@@ -1,4 +1,4 @@
-const CACHE="bloomie-p20-v1";
+const CACHE="bloomie-p20-1-v1";
 const ASSETS=[
   "./",
   "./index.html",

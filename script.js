@@ -14,8 +14,8 @@ const REMINDER_STATE_KEY="lifeOrganizer.reminderState.v1";
 const PRIVACY_KEY="lifeOrganizer.privacy.v1";
 const APPEARANCE_KEY="lifeOrganizer.appearance.v1";
 const BACKUP_FORMAT_VERSION=1;
-const APP_VERSION="2.2";
-const PATCH_VERSION="P20";
+const APP_VERSION="2.2.1";
+const PATCH_VERSION="P20.1";
 let pendingImportData=null;
 let taskRecurrenceExceptions=load(TASK_RECURRENCE_EXCEPTIONS_KEY);
 let reminderFilter="all";
@@ -27,7 +27,7 @@ let privacyHiddenAt=0;
 let unlockFailures=0;
 let unlockBlockedUntil=0;
 let pinModalMode="setup";
-let appearanceSettings=loadAppearanceSettings();
+let appearanceSettings={theme:"bloom",background:"soft",mascot:"cat",cardStyle:"round"};
 let analyticsMonth=currentMonth();
 let sharePreset="today";
 
@@ -373,6 +373,7 @@ const appearanceMascots={
  flower:{emoji:"🌸",label:"Bloom"}
 };
 const appearanceCardStyles={round:"دائري",soft:"ناعم",compact:"Compact"};
+appearanceSettings=loadAppearanceSettings();
 function normalizeAppearance(a){
  const x=a&&typeof a==="object"?a:{};
  return {
@@ -2058,5 +2059,5 @@ window.addEventListener("focus",()=>{if(!privacyLocked)checkReminders()});
 setTimeout(()=>{if(!privacyLocked)checkReminders()},1200);
 if(localStorage.getItem("lifeOrganizer.lastSeenVersion")!==APP_VERSION){
   localStorage.setItem("lifeOrganizer.lastSeenVersion",APP_VERSION);
-  setTimeout(()=>toast("Bloomie v2.2 جاهزة 🌸"),450);
+  setTimeout(()=>toast("Bloomie v2.2.1 جاهزة 🌸"),450);
 }
