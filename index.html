@@ -1,89 +1,265 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#f9dfe8" />
-  <title>منظم حياتي</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8dce7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="منظم حياتي">
+<title>منظم حياتي</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">Cute & Practical</p>
-        <h1>منظم حياتي</h1>
-        <p class="subtitle">كل جوانب يومك في مكان واحد 🌷</p>
-      </div>
-      <div class="mascot" aria-hidden="true">🐱</div>
-    </header>
+<div class="app">
+<header class="top">
+  <div>
+    <small>Cute & Practical</small>
+    <h1>منظم حياتي</h1>
+    <p id="todayLabel"></p>
+  </div>
+  <button id="mascot" aria-label="رسالة لطيفة">🐱</button>
+</header>
 
-    <main>
-      <section class="hero-card">
-        <div>
-          <span class="pill">اليوم</span>
-          <h2>أهلًا بكِ 💗</h2>
-          <p>ابدئي بخطوة صغيرة، والباقي ييجي بهدوء.</p>
-        </div>
-        <div class="sparkles">✨🌙</div>
-      </section>
-
-      <section class="grid">
-        <button class="feature pink" data-target="tasks">
-          <span class="icon">✅</span>
-          <strong>المهام</strong>
-          <small>0 مهمة اليوم</small>
-        </button>
-
-        <button class="feature peach" data-target="expenses">
-          <span class="icon">🪙</span>
-          <strong>المصاريف</strong>
-          <small>ابدئي أول تسجيل</small>
-        </button>
-
-        <button class="feature lavender" data-target="notes">
-          <span class="icon">📝</span>
-          <strong>الملاحظات</strong>
-          <small>مساحتك الخاصة</small>
-        </button>
-
-        <button class="feature mint" data-target="habits">
-          <span class="icon">🌿</span>
-          <strong>العادات</strong>
-          <small>ابني روتينك</small>
-        </button>
-
-        <button class="feature blue" data-target="study">
-          <span class="icon">🎓</span>
-          <strong>الدراسة</strong>
-          <small>رتّبي جدولك</small>
-        </button>
-
-        <button class="feature yellow" data-target="ideas">
-          <span class="icon">💡</span>
-          <strong>الأفكار</strong>
-          <small>احفظي أي فكرة</small>
-        </button>
-      </section>
-
-      <section class="quote-card">
-        <span>💞</span>
-        <p>كل يوم هو بداية جديدة لنسخة ألطف وأرتب منكِ.</p>
-      </section>
-
-      <section id="placeholder" class="placeholder hidden" aria-live="polite"></section>
-    </main>
-
-    <nav class="bottom-nav">
-      <button class="active">🏠<span>الرئيسية</span></button>
-      <button>✅<span>المهام</span></button>
-      <button>🪙<span>المصاريف</span></button>
-      <button>📝<span>الملاحظات</span></button>
-      <button>•••<span>المزيد</span></button>
-    </nav>
+<main>
+<section id="homeView" class="view active">
+  <div class="hero">
+    <div><span>اليوم</span><h2>أهلًا بكِ 💗</h2><p>كل شيء مهم عندكِ في مكان واحد.</p></div>
+    <b>✨🌙</b>
   </div>
 
-  <script src="script.js"></script>
+  <div class="sectionTitle">
+    <div><small>نظرة سريعة</small><h3>يومك الآن</h3></div>
+    <button data-go="tasks">عرض المهام</button>
+  </div>
+
+  <div class="stats">
+    <button data-go="tasks"><i>✅</i><span>مهام اليوم</span><strong id="todayCount">0</strong><em id="todaySub">لا توجد مهام</em></button>
+    <button data-go="tasks" data-filter="completed"><i>🌿</i><span>المكتمل</span><strong id="doneCount">0</strong><em>أحسنتِ ✨</em></button>
+    <button data-go="expenses"><i>🪙</i><span>مصروفات الشهر</span><strong class="moneyStat" id="monthExpenseHome">0</strong><em id="expenseHomeSub">ابدئي أول تسجيل</em></button>
+    <button data-go="expenses"><i>💰</i><span>رصيد الشهر</span><strong class="moneyStat" id="monthBalanceHome">0</strong><em>الدخل − المصروف</em></button>
+    <button data-go="notes"><i>📝</i><span>الملاحظات</span><strong id="notesCount">0</strong><em id="notesSub">اكتبي أول ملاحظة</em></button>
+    <button data-go="ideas"><i>💡</i><span>الأفكار</span><strong id="ideasCount">0</strong><em id="ideasSub">احفظي أي فكرة</em></button>
+  </div>
+
+  <div class="sectionTitle second">
+    <div><small>كل أقسامك</small><h3>مساحتك الشخصية</h3></div>
+  </div>
+
+  <div class="features">
+    <button class="pink" data-go="tasks"><i>✅</i><strong>المهام</strong><span id="taskCardText">ابدئي أول مهمة</span></button>
+    <button class="lav" data-go="notes"><i>📝</i><strong>الملاحظات</strong><span id="noteCardText">اكتبي أول ملاحظة</span></button>
+    <button class="yellow" data-go="ideas"><i>💡</i><strong>الأفكار</strong><span id="ideaCardText">احفظي أول فكرة</span></button>
+    <button class="peach" data-go="expenses"><i>🪙</i><strong>المصاريف</strong><span id="expenseCardText">ابدئي أول تسجيل</span></button>
+    <button class="mint" data-soon="العادات"><i>🌿</i><strong>العادات</strong><span>قريبًا في P05</span></button>
+    <button class="blue" data-soon="الدراسة"><i>🎓</i><strong>الدراسة</strong><span>قريبًا في P06</span></button>
+  </div>
+
+  <div class="quote">💞 <span>المكان المرتب للأفكار يخلي بالك أهدى.</span></div>
+</section>
+
+<section id="tasksView" class="view">
+  <div class="taskHead">
+    <div class="row"><div><small>P02</small><h2>المهام</h2><p id="progressText">لا توجد مهام بعد</p></div><b>🐱💗</b></div>
+    <div class="bar"><div id="progressBar"></div></div>
+    <button id="addTask" class="primary">＋ إضافة مهمة جديدة</button>
+  </div>
+  <div class="filters">
+    <button class="filter active" data-task-filter="all">الكل</button>
+    <button class="filter" data-task-filter="today">اليوم</button>
+    <button class="filter" data-task-filter="pending">متبقية</button>
+    <button class="filter" data-task-filter="completed">مكتملة</button>
+  </div>
+  <div id="taskList" class="taskList"></div>
+</section>
+
+<section id="notesView" class="view">
+  <div class="contentHead noteTheme">
+    <div class="row"><div><small>P03</small><h2>الملاحظات</h2><p id="notesSummary">مساحتك للكتابة السريعة</p></div><b>📝🌸</b></div>
+    <div class="searchBox"><span>⌕</span><input id="noteSearch" type="search" placeholder="البحث في ملاحظاتك..."></div>
+    <button id="addNote" class="primary noteBtn">＋ ملاحظة جديدة</button>
+  </div>
+  <div class="filters noteFilters">
+    <button class="filter active" data-note-filter="all">الكل</button>
+    <button class="filter" data-note-filter="personal">شخصية</button>
+    <button class="filter" data-note-filter="study">دراسة</button>
+    <button class="filter" data-note-filter="work">شغل</button>
+    <button class="filter" data-note-filter="other">أخرى</button>
+  </div>
+  <div id="notesList" class="cardsGrid"></div>
+</section>
+
+<section id="ideasView" class="view">
+  <div class="contentHead ideaTheme">
+    <div class="row"><div><small>P03</small><h2>الأفكار</h2><p id="ideasSummary">ما تسيبيش أي فكرة تضيع</p></div><b>💡✨</b></div>
+    <div class="searchBox"><span>⌕</span><input id="ideaSearch" type="search" placeholder="البحث في أفكارك..."></div>
+    <button id="addIdea" class="primary ideaBtn">＋ فكرة جديدة</button>
+  </div>
+  <div class="filters ideaFilters">
+    <button class="filter active" data-idea-filter="all">الكل</button>
+    <button class="filter" data-idea-filter="project">مشروع</button>
+    <button class="filter" data-idea-filter="life">حياتي</button>
+    <button class="filter" data-idea-filter="study">دراسة</button>
+    <button class="filter" data-idea-filter="other">أخرى</button>
+  </div>
+  <div id="ideasList" class="ideaList"></div>
+</section>
+
+
+<section id="expensesView" class="view">
+  <div class="contentHead expenseTheme">
+    <div class="row">
+      <div><small>P04</small><h2>المصاريف</h2><p id="expenseSummary">تابعي دخلك ومصاريفك ببساطة</p></div>
+      <b>🪙🌸</b>
+    </div>
+
+    <div class="moneyControls">
+      <label class="compactLabel">الشهر
+        <input id="expenseMonth" type="month">
+      </label>
+      <label class="compactLabel">العملة
+        <select id="currencySelect">
+          <option value="ج.م">ج.م</option>
+          <option value="ر.س">ر.س</option>
+          <option value="د.إ">د.إ</option>
+          <option value="$">$</option>
+          <option value="€">€</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="moneySummary">
+      <div class="moneyBox incomeBox"><span>الدخل</span><strong id="incomeTotal">0</strong><small>↑ داخل</small></div>
+      <div class="moneyBox expenseBox"><span>المصروفات</span><strong id="expenseTotal">0</strong><small>↓ خارج</small></div>
+      <div class="moneyBox balanceBox"><span>الرصيد</span><strong id="balanceTotal">0</strong><small>الدخل − المصروف</small></div>
+    </div>
+
+    <button id="addTransaction" class="primary expenseBtn">＋ إضافة حركة مالية</button>
+  </div>
+
+  <div class="filters expenseFilters">
+    <button class="filter active" data-expense-filter="all">الكل</button>
+    <button class="filter" data-expense-filter="expense">مصروف</button>
+    <button class="filter" data-expense-filter="income">دخل</button>
+  </div>
+
+  <section class="moneySection">
+    <div class="sectionMiniHead"><div><small>نظرة عامة</small><h3>أين تذهب المصاريف؟</h3></div></div>
+    <div id="categoryBreakdown" class="categoryBreakdown"></div>
+  </section>
+
+  <section class="moneySection">
+    <div class="sectionMiniHead"><div><small>هذا الشهر</small><h3>الحركات المالية</h3></div><span id="transactionCount">0 حركة</span></div>
+    <div id="transactionList" class="transactionList"></div>
+  </section>
+</section>
+
+<section id="soonView" class="view">
+  <div class="soon">
+    <div>🌸</div><h2 id="soonTitle"></h2><p id="soonText"></p>
+    <button class="secondary" data-go="home">الرجوع للرئيسية</button>
+  </div>
+</section>
+</main>
+
+<nav>
+  <button class="nav active" data-go="home">🏠<span>الرئيسية</span></button>
+  <button class="nav" data-go="tasks">✅<span>المهام</span></button>
+  <button class="nav" data-go="expenses">🪙<span>المصاريف</span></button>
+  <button class="nav" data-go="notes">📝<span>الملاحظات</span></button>
+  <button class="nav" data-go="ideas">💡<span>الأفكار</span></button>
+</nav>
+</div>
+
+<!-- TASK MODAL -->
+<div id="taskModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop"><div><small>مهمتك الخاصة</small><h2 id="taskModalTitle">إضافة مهمة</h2></div><button data-close="taskModal">✕</button></div>
+    <form id="taskForm">
+      <input type="hidden" id="taskId">
+      <label>اسم المهمة<input id="taskTitle" maxlength="80" placeholder="مثال: أراجع درس الرياضيات" required></label>
+      <div class="formRow">
+        <label>التاريخ<input id="taskDate" type="date" required></label>
+        <label>الوقت<input id="taskTime" type="time"></label>
+      </div>
+      <div class="formRow">
+        <label>الأولوية<select id="taskPriority"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">عالية</option></select></label>
+        <label>التصنيف<select id="taskCategory"><option value="personal">شخصي</option><option value="study">دراسة</option><option value="home">البيت</option><option value="work">شغل</option><option value="other">أخرى</option></select></label>
+      </div>
+      <label>ملاحظة اختيارية<textarea id="taskNote" rows="3" maxlength="180" placeholder="أي تفاصيل إضافية..."></textarea></label>
+      <button class="primary" type="submit" id="saveTask">حفظ المهمة 💗</button>
+    </form>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div id="noteModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop"><div><small>ملاحظتك الخاصة</small><h2 id="noteModalTitle">ملاحظة جديدة</h2></div><button data-close="noteModal">✕</button></div>
+    <form id="noteForm">
+      <input type="hidden" id="noteId">
+      <label>العنوان<input id="noteTitle" maxlength="80" placeholder="عنوان قصير للملاحظة" required></label>
+      <label>المحتوى<textarea id="noteBody" rows="7" maxlength="1200" placeholder="اكتبي ملاحظتك هنا..." required></textarea></label>
+      <label>التصنيف<select id="noteCategory"><option value="personal">شخصية</option><option value="study">دراسة</option><option value="work">شغل</option><option value="other">أخرى</option></select></label>
+      <button class="primary noteBtn" type="submit" id="saveNote">حفظ الملاحظة 🌸</button>
+    </form>
+  </div>
+</div>
+
+<!-- IDEA MODAL -->
+<div id="ideaModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop"><div><small>فكرتك الخاصة</small><h2 id="ideaModalTitle">فكرة جديدة</h2></div><button data-close="ideaModal">✕</button></div>
+    <form id="ideaForm">
+      <input type="hidden" id="ideaId">
+      <label>عنوان الفكرة<input id="ideaTitle" maxlength="80" placeholder="مثال: تطبيق صغير للقراءة" required></label>
+      <label>تفاصيل الفكرة<textarea id="ideaBody" rows="6" maxlength="1200" placeholder="اكتبي الفكرة قبل ما تضيع..." required></textarea></label>
+      <label>التصنيف<select id="ideaCategory"><option value="project">مشروع</option><option value="life">حياتي</option><option value="study">دراسة</option><option value="other">أخرى</option></select></label>
+      <button class="primary ideaBtn" type="submit" id="saveIdea">حفظ الفكرة ✨</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- EXPENSE MODAL -->
+<div id="expenseModal" class="modal hidden">
+  <div class="sheet">
+    <div class="modalTop">
+      <div><small>حركتك المالية</small><h2 id="expenseModalTitle">إضافة حركة مالية</h2></div>
+      <button data-close="expenseModal">✕</button>
+    </div>
+    <form id="expenseForm">
+      <input type="hidden" id="transactionId">
+
+      <div class="typeToggle" id="typeToggle">
+        <button type="button" class="typeChoice active" data-type-choice="expense">↓ مصروف</button>
+        <button type="button" class="typeChoice" data-type-choice="income">↑ دخل</button>
+      </div>
+      <input type="hidden" id="transactionType" value="expense">
+
+      <label>المبلغ
+        <input id="transactionAmount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required>
+      </label>
+
+      <label>الوصف
+        <input id="transactionTitle" maxlength="80" placeholder="مثال: مشتريات البيت" required>
+      </label>
+
+      <div class="formRow">
+        <label>التاريخ<input id="transactionDate" type="date" required></label>
+        <label>التصنيف<select id="transactionCategory"></select></label>
+      </div>
+
+      <label>ملاحظة اختيارية
+        <textarea id="transactionNote" rows="3" maxlength="240" placeholder="تفاصيل إضافية..."></textarea>
+      </label>
+
+      <button class="primary expenseBtn" type="submit" id="saveTransaction">حفظ الحركة 🪙</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="./script.js"></script>
 </body>
 </html>

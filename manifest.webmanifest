@@ -2,9 +2,10 @@
   "name": "منظم حياتي",
   "short_name": "منظم حياتي",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#fff8fb",
-  "theme_color": "#f9dfe8",
+  "theme_color": "#f8dce7",
   "lang": "ar",
   "dir": "rtl"
 }
