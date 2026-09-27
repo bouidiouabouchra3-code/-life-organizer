@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f9dfe8" />
+  <title>منظم حياتي</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Cute & Practical</p>
+        <h1>منظم حياتي</h1>
+        <p class="subtitle">كل جوانب يومك في مكان واحد 🌷</p>
+      </div>
+      <div class="mascot" aria-hidden="true">🐱</div>
+    </header>
+
+    <main>
+      <section class="hero-card">
+        <div>
+          <span class="pill">اليوم</span>
+          <h2>أهلًا بكِ 💗</h2>
+          <p>ابدئي بخطوة صغيرة، والباقي ييجي بهدوء.</p>
+        </div>
+        <div class="sparkles">✨🌙</div>
+      </section>
+
+      <section class="grid">
+        <button class="feature pink" data-target="tasks">
+          <span class="icon">✅</span>
+          <strong>المهام</strong>
+          <small>0 مهمة اليوم</small>
+        </button>
+
+        <button class="feature peach" data-target="expenses">
+          <span class="icon">🪙</span>
+          <strong>المصاريف</strong>
+          <small>ابدئي أول تسجيل</small>
+        </button>
+
+        <button class="feature lavender" data-target="notes">
+          <span class="icon">📝</span>
+          <strong>الملاحظات</strong>
+          <small>مساحتك الخاصة</small>
+        </button>
+
+        <button class="feature mint" data-target="habits">
+          <span class="icon">🌿</span>
+          <strong>العادات</strong>
+          <small>ابني روتينك</small>
+        </button>
+
+        <button class="feature blue" data-target="study">
+          <span class="icon">🎓</span>
+          <strong>الدراسة</strong>
+          <small>رتّبي جدولك</small>
+        </button>
+
+        <button class="feature yellow" data-target="ideas">
+          <span class="icon">💡</span>
+          <strong>الأفكار</strong>
+          <small>احفظي أي فكرة</small>
+        </button>
+      </section>
+
+      <section class="quote-card">
+        <span>💞</span>
+        <p>كل يوم هو بداية جديدة لنسخة ألطف وأرتب منكِ.</p>
+      </section>
+
+      <section id="placeholder" class="placeholder hidden" aria-live="polite"></section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="active">🏠<span>الرئيسية</span></button>
+      <button>✅<span>المهام</span></button>
+      <button>🪙<span>المصاريف</span></button>
+      <button>📝<span>الملاحظات</span></button>
+      <button>•••<span>المزيد</span></button>
+    </nav>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
